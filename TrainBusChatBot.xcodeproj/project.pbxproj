@@ -1,0 +1,758 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07DB13662EA015CB00C6487E /* TrainBusChatBotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */; };
+		07DB136A2EA015CC00C6487E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB13692EA015CC00C6487E /* Assets.xcassets */; };
+		07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */; };
+		07DB13772EA015CC00C6487E /* TrainBusChatBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */; };
+		07DB13812EA015CC00C6487E /* TrainBusChatBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */; };
+		07DB13832EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */; };
+		07DB14222EA025A800C6487E /* BartManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14212EA025A800C6487E /* BartManager.swift */; };
+		07DB14242EA025B800C6487E /* BartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14232EA025B800C6487E /* BartViewModel.swift */; };
+		07DB143A2EA02A4400C6487E /* fare_attributes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14272EA02A4400C6487E /* fare_attributes.txt */; };
+		07DB143B2EA02A4400C6487E /* transfers.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14282EA02A4400C6487E /* transfers.txt */; };
+		07DB143C2EA02A4400C6487E /* agency.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14292EA02A4400C6487E /* agency.txt */; };
+		07DB143D2EA02A4400C6487E /* fare_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB142A2EA02A4400C6487E /* fare_rules.txt */; };
+		07DB143E2EA02A4400C6487E /* calendar_dates.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB142B2EA02A4400C6487E /* calendar_dates.txt */; };
+		07DB143F2EA02A4400C6487E /* stop_times.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB142C2EA02A4400C6487E /* stop_times.txt */; };
+		07DB14402EA02A4400C6487E /* directions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB142D2EA02A4400C6487E /* directions.txt */; };
+		07DB14412EA02A4400C6487E /* farezone_attributes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB142E2EA02A4400C6487E /* farezone_attributes.txt */; };
+		07DB14422EA02A4400C6487E /* shapes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB142F2EA02A4400C6487E /* shapes.txt */; };
+		07DB14432EA02A4400C6487E /* trips.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14302EA02A4400C6487E /* trips.txt */; };
+		07DB14442EA02A4400C6487E /* route_attributes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14312EA02A4400C6487E /* route_attributes.txt */; };
+		07DB14452EA02A4400C6487E /* feed_info.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14322EA02A4400C6487E /* feed_info.txt */; };
+		07DB14462EA02A4400C6487E /* attributions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14332EA02A4400C6487E /* attributions.txt */; };
+		07DB14472EA02A4400C6487E /* stops.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14342EA02A4400C6487E /* stops.txt */; };
+		07DB14482EA02A4400C6487E /* rider_categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14352EA02A4400C6487E /* rider_categories.txt */; };
+		07DB14492EA02A4400C6487E /* fare_rider_categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14362EA02A4400C6487E /* fare_rider_categories.txt */; };
+		07DB144A2EA02A4400C6487E /* calendar_attributes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14372EA02A4400C6487E /* calendar_attributes.txt */; };
+		07DB144B2EA02A4400C6487E /* calendar.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14382EA02A4400C6487E /* calendar.txt */; };
+		07DB144C2EA02A4400C6487E /* routes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 07DB14392EA02A4400C6487E /* routes.txt */; };
+		07DB144F2EA02D0C00C6487E /* CSV in Frameworks */ = {isa = PBXBuildFile; productRef = 07DB144E2EA02D0C00C6487E /* CSV */; };
+		07DB14512EA03B6000C6487E /* ContentView_ViewModelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14502EA03B6000C6487E /* ContentView_ViewModelWrapper.swift */; };
+		07DB14542EA03CB100C6487E /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14532EA03CB100C6487E /* LocationManager.swift */; };
+		07DB145B2EA044AF00C6487E /* TrainListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14592EA044AF00C6487E /* TrainListView.swift */; };
+		07DB145C2EA044AF00C6487E /* TrainListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB145A2EA044AF00C6487E /* TrainListViewModel.swift */; };
+		07DB145E2EA0510300C6487E /* NearbyStopsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB145D2EA0510300C6487E /* NearbyStopsView.swift */; };
+		07DB14602EA0512900C6487E /* BartManagerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB145F2EA0512900C6487E /* BartManagerWrapper.swift */; };
+		07DB14632EA0513300C6487E /* ChatbotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14612EA0513300C6487E /* ChatbotView.swift */; };
+		07DB14642EA0513300C6487E /* ChatbotViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14622EA0513300C6487E /* ChatbotViewModel.swift */; };
+		07DB14662EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14652EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift */; };
+		07DB146C2EA3017C00C6487E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07DB146B2EA3017C00C6487E /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		07DB13732EA015CC00C6487E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07DB135A2EA015CB00C6487E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07DB13612EA015CB00C6487E;
+			remoteInfo = TrainBusChatBot;
+		};
+		07DB137D2EA015CC00C6487E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07DB135A2EA015CB00C6487E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07DB13612EA015CB00C6487E;
+			remoteInfo = TrainBusChatBot;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07DB13622EA015CB00C6487E /* TrainBusChatBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainBusChatBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotApp.swift; sourceTree = "<group>"; };
+		07DB13692EA015CC00C6487E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		07DB13722EA015CC00C6487E /* TrainBusChatBotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainBusChatBotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotTests.swift; sourceTree = "<group>"; };
+		07DB137C2EA015CC00C6487E /* TrainBusChatBotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainBusChatBotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotUITests.swift; sourceTree = "<group>"; };
+		07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		07DB14212EA025A800C6487E /* BartManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartManager.swift; sourceTree = "<group>"; };
+		07DB14232EA025B800C6487E /* BartViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartViewModel.swift; sourceTree = "<group>"; };
+		07DB14272EA02A4400C6487E /* fare_attributes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fare_attributes.txt; sourceTree = "<group>"; };
+		07DB14282EA02A4400C6487E /* transfers.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = transfers.txt; sourceTree = "<group>"; };
+		07DB14292EA02A4400C6487E /* agency.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = agency.txt; sourceTree = "<group>"; };
+		07DB142A2EA02A4400C6487E /* fare_rules.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fare_rules.txt; sourceTree = "<group>"; };
+		07DB142B2EA02A4400C6487E /* calendar_dates.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = calendar_dates.txt; sourceTree = "<group>"; };
+		07DB142C2EA02A4400C6487E /* stop_times.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = stop_times.txt; sourceTree = "<group>"; };
+		07DB142D2EA02A4400C6487E /* directions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = directions.txt; sourceTree = "<group>"; };
+		07DB142E2EA02A4400C6487E /* farezone_attributes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = farezone_attributes.txt; sourceTree = "<group>"; };
+		07DB142F2EA02A4400C6487E /* shapes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shapes.txt; sourceTree = "<group>"; };
+		07DB14302EA02A4400C6487E /* trips.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = trips.txt; sourceTree = "<group>"; };
+		07DB14312EA02A4400C6487E /* route_attributes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = route_attributes.txt; sourceTree = "<group>"; };
+		07DB14322EA02A4400C6487E /* feed_info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = feed_info.txt; sourceTree = "<group>"; };
+		07DB14332EA02A4400C6487E /* attributions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = attributions.txt; sourceTree = "<group>"; };
+		07DB14342EA02A4400C6487E /* stops.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = stops.txt; sourceTree = "<group>"; };
+		07DB14352EA02A4400C6487E /* rider_categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rider_categories.txt; sourceTree = "<group>"; };
+		07DB14362EA02A4400C6487E /* fare_rider_categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fare_rider_categories.txt; sourceTree = "<group>"; };
+		07DB14372EA02A4400C6487E /* calendar_attributes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = calendar_attributes.txt; sourceTree = "<group>"; };
+		07DB14382EA02A4400C6487E /* calendar.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = calendar.txt; sourceTree = "<group>"; };
+		07DB14392EA02A4400C6487E /* routes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = routes.txt; sourceTree = "<group>"; };
+		07DB14502EA03B6000C6487E /* ContentView_ViewModelWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentView_ViewModelWrapper.swift; path = TrainBusChatBot/ContentView_ViewModelWrapper.swift; sourceTree = SOURCE_ROOT; };
+		07DB14532EA03CB100C6487E /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationManager.swift; path = TrainBusChatBot/LocationManager.swift; sourceTree = SOURCE_ROOT; };
+		07DB14592EA044AF00C6487E /* TrainListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainListView.swift; sourceTree = "<group>"; };
+		07DB145A2EA044AF00C6487E /* TrainListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainListViewModel.swift; sourceTree = "<group>"; };
+		07DB145D2EA0510300C6487E /* NearbyStopsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyStopsView.swift; sourceTree = "<group>"; };
+		07DB145F2EA0512900C6487E /* BartManagerWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartManagerWrapper.swift; sourceTree = "<group>"; };
+		07DB14612EA0513300C6487E /* ChatbotView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatbotView.swift; sourceTree = "<group>"; };
+		07DB14622EA0513300C6487E /* ChatbotViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatbotViewModel.swift; sourceTree = "<group>"; };
+		07DB14652EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyStopsView_ViewModelWrapper.swift; sourceTree = "<group>"; };
+		07DB146B2EA3017C00C6487E /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		07DB135F2EA015CB00C6487E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07DB144F2EA02D0C00C6487E /* CSV in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07DB136F2EA015CC00C6487E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07DB13792EA015CC00C6487E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07DB13592EA015CB00C6487E = {
+			isa = PBXGroup;
+			children = (
+				07DB13642EA015CB00C6487E /* TrainBusChatBot */,
+				07DB13752EA015CC00C6487E /* TrainBusChatBotTests */,
+				07DB137F2EA015CC00C6487E /* TrainBusChatBotUITests */,
+				07DB13632EA015CB00C6487E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		07DB13632EA015CB00C6487E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07DB13622EA015CB00C6487E /* TrainBusChatBot.app */,
+				07DB13722EA015CC00C6487E /* TrainBusChatBotTests.xctest */,
+				07DB137C2EA015CC00C6487E /* TrainBusChatBotUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		07DB13642EA015CB00C6487E /* TrainBusChatBot */ = {
+			isa = PBXGroup;
+			children = (
+				07DB146B2EA3017C00C6487E /* LaunchScreen.storyboard */,
+				07DB14522EA03CA300C6487E /* Helper */,
+				07DB14262EA02A4400C6487E /* GTFSTransitData_BA */,
+				07DB14212EA025A800C6487E /* BartManager.swift */,
+				07DB145F2EA0512900C6487E /* BartManagerWrapper.swift */,
+				07DB14232EA025B800C6487E /* BartViewModel.swift */,
+				07DB14612EA0513300C6487E /* ChatbotView.swift */,
+				07DB14622EA0513300C6487E /* ChatbotViewModel.swift */,
+				07DB145D2EA0510300C6487E /* NearbyStopsView.swift */,
+				07DB14652EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift */,
+				07DB14592EA044AF00C6487E /* TrainListView.swift */,
+				07DB145A2EA044AF00C6487E /* TrainListViewModel.swift */,
+				07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */,
+				07DB13692EA015CC00C6487E /* Assets.xcassets */,
+				07DB136B2EA015CC00C6487E /* Preview Content */,
+			);
+			path = TrainBusChatBot;
+			sourceTree = "<group>";
+		};
+		07DB136B2EA015CC00C6487E /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		07DB13752EA015CC00C6487E /* TrainBusChatBotTests */ = {
+			isa = PBXGroup;
+			children = (
+				07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */,
+			);
+			path = TrainBusChatBotTests;
+			sourceTree = "<group>";
+		};
+		07DB137F2EA015CC00C6487E /* TrainBusChatBotUITests */ = {
+			isa = PBXGroup;
+			children = (
+				07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */,
+				07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */,
+			);
+			path = TrainBusChatBotUITests;
+			sourceTree = "<group>";
+		};
+		07DB14262EA02A4400C6487E /* GTFSTransitData_BA */ = {
+			isa = PBXGroup;
+			children = (
+				07DB14502EA03B6000C6487E /* ContentView_ViewModelWrapper.swift */,
+				07DB14272EA02A4400C6487E /* fare_attributes.txt */,
+				07DB14282EA02A4400C6487E /* transfers.txt */,
+				07DB14292EA02A4400C6487E /* agency.txt */,
+				07DB142A2EA02A4400C6487E /* fare_rules.txt */,
+				07DB142B2EA02A4400C6487E /* calendar_dates.txt */,
+				07DB142C2EA02A4400C6487E /* stop_times.txt */,
+				07DB142D2EA02A4400C6487E /* directions.txt */,
+				07DB142E2EA02A4400C6487E /* farezone_attributes.txt */,
+				07DB142F2EA02A4400C6487E /* shapes.txt */,
+				07DB14302EA02A4400C6487E /* trips.txt */,
+				07DB14312EA02A4400C6487E /* route_attributes.txt */,
+				07DB14322EA02A4400C6487E /* feed_info.txt */,
+				07DB14332EA02A4400C6487E /* attributions.txt */,
+				07DB14342EA02A4400C6487E /* stops.txt */,
+				07DB14352EA02A4400C6487E /* rider_categories.txt */,
+				07DB14362EA02A4400C6487E /* fare_rider_categories.txt */,
+				07DB14372EA02A4400C6487E /* calendar_attributes.txt */,
+				07DB14382EA02A4400C6487E /* calendar.txt */,
+				07DB14392EA02A4400C6487E /* routes.txt */,
+			);
+			path = GTFSTransitData_BA;
+			sourceTree = "<group>";
+		};
+		07DB14522EA03CA300C6487E /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				07DB14532EA03CB100C6487E /* LocationManager.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		07DB13612EA015CB00C6487E /* TrainBusChatBot */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07DB13862EA015CC00C6487E /* Build configuration list for PBXNativeTarget "TrainBusChatBot" */;
+			buildPhases = (
+				07DB135E2EA015CB00C6487E /* Sources */,
+				07DB135F2EA015CB00C6487E /* Frameworks */,
+				07DB13602EA015CB00C6487E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TrainBusChatBot;
+			packageProductDependencies = (
+				07DB144E2EA02D0C00C6487E /* CSV */,
+			);
+			productName = TrainBusChatBot;
+			productReference = 07DB13622EA015CB00C6487E /* TrainBusChatBot.app */;
+			productType = "com.apple.product-type.application";
+		};
+		07DB13712EA015CC00C6487E /* TrainBusChatBotTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07DB13892EA015CC00C6487E /* Build configuration list for PBXNativeTarget "TrainBusChatBotTests" */;
+			buildPhases = (
+				07DB136E2EA015CC00C6487E /* Sources */,
+				07DB136F2EA015CC00C6487E /* Frameworks */,
+				07DB13702EA015CC00C6487E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07DB13742EA015CC00C6487E /* PBXTargetDependency */,
+			);
+			name = TrainBusChatBotTests;
+			productName = TrainBusChatBotTests;
+			productReference = 07DB13722EA015CC00C6487E /* TrainBusChatBotTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		07DB137B2EA015CC00C6487E /* TrainBusChatBotUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07DB138C2EA015CC00C6487E /* Build configuration list for PBXNativeTarget "TrainBusChatBotUITests" */;
+			buildPhases = (
+				07DB13782EA015CC00C6487E /* Sources */,
+				07DB13792EA015CC00C6487E /* Frameworks */,
+				07DB137A2EA015CC00C6487E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07DB137E2EA015CC00C6487E /* PBXTargetDependency */,
+			);
+			name = TrainBusChatBotUITests;
+			productName = TrainBusChatBotUITests;
+			productReference = 07DB137C2EA015CC00C6487E /* TrainBusChatBotUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07DB135A2EA015CB00C6487E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1520;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					07DB13612EA015CB00C6487E = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					07DB13712EA015CC00C6487E = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = 07DB13612EA015CB00C6487E;
+					};
+					07DB137B2EA015CC00C6487E = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = 07DB13612EA015CB00C6487E;
+					};
+				};
+			};
+			buildConfigurationList = 07DB135D2EA015CB00C6487E /* Build configuration list for PBXProject "TrainBusChatBot" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 07DB13592EA015CB00C6487E;
+			packageReferences = (
+				07DB144D2EA02D0C00C6487E /* XCRemoteSwiftPackageReference "CSV.swift" */,
+			);
+			productRefGroup = 07DB13632EA015CB00C6487E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				07DB13612EA015CB00C6487E /* TrainBusChatBot */,
+				07DB13712EA015CC00C6487E /* TrainBusChatBotTests */,
+				07DB137B2EA015CC00C6487E /* TrainBusChatBotUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		07DB13602EA015CB00C6487E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07DB144B2EA02A4400C6487E /* calendar.txt in Resources */,
+				07DB14472EA02A4400C6487E /* stops.txt in Resources */,
+				07DB144C2EA02A4400C6487E /* routes.txt in Resources */,
+				07DB143D2EA02A4400C6487E /* fare_rules.txt in Resources */,
+				07DB143A2EA02A4400C6487E /* fare_attributes.txt in Resources */,
+				07DB144A2EA02A4400C6487E /* calendar_attributes.txt in Resources */,
+				07DB14452EA02A4400C6487E /* feed_info.txt in Resources */,
+				07DB143C2EA02A4400C6487E /* agency.txt in Resources */,
+				07DB14492EA02A4400C6487E /* fare_rider_categories.txt in Resources */,
+				07DB146C2EA3017C00C6487E /* LaunchScreen.storyboard in Resources */,
+				07DB14462EA02A4400C6487E /* attributions.txt in Resources */,
+				07DB143F2EA02A4400C6487E /* stop_times.txt in Resources */,
+				07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */,
+				07DB14432EA02A4400C6487E /* trips.txt in Resources */,
+				07DB14442EA02A4400C6487E /* route_attributes.txt in Resources */,
+				07DB136A2EA015CC00C6487E /* Assets.xcassets in Resources */,
+				07DB143B2EA02A4400C6487E /* transfers.txt in Resources */,
+				07DB14402EA02A4400C6487E /* directions.txt in Resources */,
+				07DB14482EA02A4400C6487E /* rider_categories.txt in Resources */,
+				07DB14422EA02A4400C6487E /* shapes.txt in Resources */,
+				07DB143E2EA02A4400C6487E /* calendar_dates.txt in Resources */,
+				07DB14412EA02A4400C6487E /* farezone_attributes.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07DB13702EA015CC00C6487E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07DB137A2EA015CC00C6487E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07DB135E2EA015CB00C6487E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07DB14632EA0513300C6487E /* ChatbotView.swift in Sources */,
+				07DB14222EA025A800C6487E /* BartManager.swift in Sources */,
+				07DB14602EA0512900C6487E /* BartManagerWrapper.swift in Sources */,
+				07DB14642EA0513300C6487E /* ChatbotViewModel.swift in Sources */,
+				07DB145C2EA044AF00C6487E /* TrainListViewModel.swift in Sources */,
+				07DB14542EA03CB100C6487E /* LocationManager.swift in Sources */,
+				07DB14512EA03B6000C6487E /* ContentView_ViewModelWrapper.swift in Sources */,
+				07DB13662EA015CB00C6487E /* TrainBusChatBotApp.swift in Sources */,
+				07DB145E2EA0510300C6487E /* NearbyStopsView.swift in Sources */,
+				07DB14242EA025B800C6487E /* BartViewModel.swift in Sources */,
+				07DB14662EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift in Sources */,
+				07DB145B2EA044AF00C6487E /* TrainListView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07DB136E2EA015CC00C6487E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07DB13772EA015CC00C6487E /* TrainBusChatBotTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07DB13782EA015CC00C6487E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07DB13832EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift in Sources */,
+				07DB13812EA015CC00C6487E /* TrainBusChatBotUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07DB13742EA015CC00C6487E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07DB13612EA015CB00C6487E /* TrainBusChatBot */;
+			targetProxy = 07DB13732EA015CC00C6487E /* PBXContainerItemProxy */;
+		};
+		07DB137E2EA015CC00C6487E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07DB13612EA015CB00C6487E /* TrainBusChatBot */;
+			targetProxy = 07DB137D2EA015CC00C6487E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		07DB13842EA015CC00C6487E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		07DB13852EA015CC00C6487E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		07DB13872EA015CC00C6487E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TrainBusChatBot/Preview Content\"";
+				DEVELOPMENT_TEAM = QC9K328B2W;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Use location to find nearby stops";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "c-lo.TrainBusChatBot";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		07DB13882EA015CC00C6487E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TrainBusChatBot/Preview Content\"";
+				DEVELOPMENT_TEAM = QC9K328B2W;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Use location to find nearby stops";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "c-lo.TrainBusChatBot";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		07DB138A2EA015CC00C6487E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3353ZR648;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "c-lo.TrainBusChatBotTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrainBusChatBot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TrainBusChatBot";
+			};
+			name = Debug;
+		};
+		07DB138B2EA015CC00C6487E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3353ZR648;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "c-lo.TrainBusChatBotTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TrainBusChatBot.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TrainBusChatBot";
+			};
+			name = Release;
+		};
+		07DB138D2EA015CC00C6487E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3353ZR648;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "c-lo.TrainBusChatBotUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TrainBusChatBot;
+			};
+			name = Debug;
+		};
+		07DB138E2EA015CC00C6487E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3353ZR648;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "c-lo.TrainBusChatBotUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TrainBusChatBot;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07DB135D2EA015CB00C6487E /* Build configuration list for PBXProject "TrainBusChatBot" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07DB13842EA015CC00C6487E /* Debug */,
+				07DB13852EA015CC00C6487E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07DB13862EA015CC00C6487E /* Build configuration list for PBXNativeTarget "TrainBusChatBot" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07DB13872EA015CC00C6487E /* Debug */,
+				07DB13882EA015CC00C6487E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07DB13892EA015CC00C6487E /* Build configuration list for PBXNativeTarget "TrainBusChatBotTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07DB138A2EA015CC00C6487E /* Debug */,
+				07DB138B2EA015CC00C6487E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07DB138C2EA015CC00C6487E /* Build configuration list for PBXNativeTarget "TrainBusChatBotUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07DB138D2EA015CC00C6487E /* Debug */,
+				07DB138E2EA015CC00C6487E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		07DB144D2EA02D0C00C6487E /* XCRemoteSwiftPackageReference "CSV.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yaslab/CSV.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		07DB144E2EA02D0C00C6487E /* CSV */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 07DB144D2EA02D0C00C6487E /* XCRemoteSwiftPackageReference "CSV.swift" */;
+			productName = CSV;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 07DB135A2EA015CB00C6487E /* Project object */;
+}
