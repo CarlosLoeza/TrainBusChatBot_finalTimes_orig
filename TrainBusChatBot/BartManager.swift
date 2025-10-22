@@ -125,6 +125,7 @@ class BartManager {
         "MacArthur": "mcar",
         "Millbrae": "mlbr",
         "Millbrae (Caltrain Transfer Platform)": "mlbr",
+        "SFO/Millbrae": "mlbr",
         "Milpitas": "mlpt",
         "Montgomery Street": "mont",
         "Montgomery St": "mont",
@@ -149,6 +150,7 @@ class BartManager {
         "San Bruno": "sbrn",
         "San Francisco International Airport": "sfia",
         "SFO": "sfia",
+        "sfo": "sfia",
         "San Leandro": "sanl",
         "South Hayward": "shay",
         "South San Francisco": "ssan",
@@ -424,6 +426,14 @@ class BartManager {
             guard let originSequence = Int(originStopTime.stop_sequence),
                   let destinationSequence = Int(destinationStopTime.stop_sequence),
                   destinationSequence > originSequence else {
+                continue
+            }
+
+            let destinationName = destinationStationName.lowercased()
+            let headsign = trip.trip_headsign.lowercased()
+
+            guard destinationName.contains(headsign) else {
+                print("Trip headsign '\(headsign)' is not contained in '\(destinationName)'. Skipping.")
                 continue
             }
             

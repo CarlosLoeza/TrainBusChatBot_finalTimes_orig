@@ -162,9 +162,7 @@ class ChatbotViewModel: ObservableObject {
         let groupedEstimates = Dictionary(grouping: trains, by: { $0.destination })
         
         for (destination, etdsForDestination) in groupedEstimates {
-            if destination.lowercased() != queryDestinationName?.lowercased() {
-                responseText += "To \(destination):\n"
-            }
+            responseText += "To \(destination):\n"
             for etd in etdsForDestination {
                 for estimate in etd.estimate {
                     responseText += "  - \(estimate.minutes) min (Platform \(estimate.platform ?? "?"))\n"
