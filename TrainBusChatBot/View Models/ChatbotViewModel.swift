@@ -24,7 +24,7 @@ class ChatbotViewModel: ObservableObject {
         self.sortedAliases = bartManager.bartAbbreviationMap.keys.sorted { $0.count > $1.count }
         
         // Add initial prompt message
-        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'nearby BART' or 'next Daly City BART going North'.", isUser: false))
+        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Daly City BART' or 'Next Daly City Bart to Powell' if you know your start and destination stop.", isUser: false))
     }
     
     func processQuery(_ query: String, userLocation: CLLocation?) async {
@@ -68,7 +68,7 @@ class ChatbotViewModel: ObservableObject {
                 print("  - Origin: \(originStation.name) (Abbr: \(originStation.abbr))")
                 print("  - Destination: \(destinationStation.name) (Abbr: \(destinationStation.abbr))")
 
-                let connectingTrips = await bartManager.findConnectingTrips(from: originStation.name, to: destinationStation.name)
+                let connectingTrips = await bartManager.findTripsPassingThrough(originStationName: originStation.name, destinationStationName: destinationStation.name)
                 
                 if connectingTrips.isEmpty {
                     botResponseContent = "No direct trains found from \(originStation.name) to \(destinationStation.name) in the schedule."
