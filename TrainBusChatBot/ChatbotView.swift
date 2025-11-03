@@ -14,8 +14,7 @@ struct ChatbotView: View {
 
     var body: some View {
         VStack {
-            ScrollViewReader {
-                scrollViewProxy in
+            ScrollViewReader { scrollViewProxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(chatbotVM.messages) { message in

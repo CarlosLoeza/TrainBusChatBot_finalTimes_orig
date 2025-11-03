@@ -24,7 +24,7 @@ class ChatbotViewModel: ObservableObject {
         self.sortedAliases = bartManager.bartAbbreviationMap.keys.sorted { $0.count > $1.count }
         
         // Add initial prompt message
-        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'nearby BART' or 'next Daly City BART going North'.", isUser: false))
+        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Coliseum bart' or 'Next Daly City bart to Powell'.", isUser: false))
     }
     
     func processQuery(_ query: String, userLocation: CLLocation?) async {
@@ -149,7 +149,7 @@ class ChatbotViewModel: ObservableObject {
                 }
             }
         } else {
-            botResponseContent = "I can help you find nearby BART stops or next train departures. Try asking 'nearby BART' or 'next Daly City BART going North'."
+            botResponseContent = "I can help you find nearby BART stops or next train departures. Try asking 'Next Coliseum bart' or 'Next Daly City bart to Powell'."
         }
         
         messages.append(Message(content: botResponseContent, isUser: false))
