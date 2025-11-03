@@ -7,14 +7,14 @@ struct ChatbotView: View {
     @State private var query: String = ""
     @State private var userLocation: CLLocation? // To pass to the chatbotVM
     @State private var keyboardHeight: CGFloat = 0 // New state for keyboard height
+    @FocusState private var isTextFieldFocused: Bool
     
     // We need a way to get the user's location for the chatbot
     @StateObject private var locationManager = LocationManager()
 
     var body: some View {
         VStack {
-            ScrollViewReader {
-                scrollViewProxy in
+            ScrollViewReader { scrollViewProxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(chatbotVM.messages) { message in
@@ -59,13 +59,15 @@ struct ChatbotView: View {
                     NotificationCenter.default.removeObserver(self)
                 }
             }
-            
+            .onTapGesture {
+                isTextFieldFocused = false // dismiss keyboard when tapping anywhere outside
+            }
             HStack {
                 TextField("Ask about BART...", text: $query)
                     .padding()
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(13.0)
-//                    .padding()
+                    .focused($isTextFieldFocused)
                     .ignoresSafeArea(.all)
                 Button{
                     Task {
