@@ -1,7 +1,7 @@
 
 import SwiftUI
 import CoreLocation
-
+//
 struct ChatbotView: View {
     @StateObject var chatbotVM: ChatbotViewModel
     @State private var keyboardHeight: CGFloat = 0 // New state for keyboard height
