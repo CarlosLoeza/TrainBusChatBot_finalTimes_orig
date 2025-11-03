@@ -159,7 +159,6 @@
 				07DB146B2EA3017C00C6487E /* LaunchScreen.storyboard */,
 				07DB14522EA03CA300C6487E /* Helper */,
 				07DB14262EA02A4400C6487E /* GTFSTransitData_BA */,
-				07DB14212EA025A800C6487E /* BartManager.swift */,
 				07DB145F2EA0512900C6487E /* BartManagerWrapper.swift */,
 				07DB14232EA025B800C6487E /* BartViewModel.swift */,
 				07DB14612EA0513300C6487E /* ChatbotView.swift */,
@@ -231,6 +230,7 @@
 			isa = PBXGroup;
 			children = (
 				07DB14532EA03CB100C6487E /* LocationManager.swift */,
+				07DB14212EA025A800C6487E /* BartManager.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";

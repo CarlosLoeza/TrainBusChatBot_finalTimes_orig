@@ -7,6 +7,7 @@ struct ChatbotView: View {
     @State private var query: String = ""
     @State private var userLocation: CLLocation? // To pass to the chatbotVM
     @State private var keyboardHeight: CGFloat = 0 // New state for keyboard height
+    @FocusState private var isTextFieldFocused: Bool
     
     // We need a way to get the user's location for the chatbot
     @StateObject private var locationManager = LocationManager()
@@ -59,13 +60,15 @@ struct ChatbotView: View {
                     NotificationCenter.default.removeObserver(self)
                 }
             }
-            
+            .onTapGesture {
+                isTextFieldFocused = false // dismiss keyboard when tapping anywhere outside
+            }
             HStack {
                 TextField("Ask about BART...", text: $query)
                     .padding()
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(13.0)
-//                    .padding()
+                    .focused($isTextFieldFocused) // ← New line
                     .ignoresSafeArea(.all)
                 Button{
                     Task {
@@ -87,10 +90,12 @@ struct ChatbotView: View {
                 }
             }
             .padding(5) // Keep the padding(5) as it was in the current file
+            
         }
+
         .navigationTitle("BART Chatbot")
         .onAppear {
-            // locationManager.requestLocation() // Temporarily commented out for debugging UI delay
+             locationManager.requestLocation() // Temporarily commented out for debugging UI delay
         }
         .onReceive(locationManager.$location) { location in
             self.userLocation = location
