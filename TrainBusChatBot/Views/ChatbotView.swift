@@ -4,8 +4,6 @@ import CoreLocation
 
 struct ChatbotView: View {
     @StateObject var chatbotVM: ChatbotViewModel
-    @State private var query: String = ""
-    @State private var userLocation: CLLocation? // To pass to the chatbotVM
     @State private var keyboardHeight: CGFloat = 0 // New state for keyboard height
     @FocusState private var isTextFieldFocused: Bool
     
@@ -63,7 +61,7 @@ struct ChatbotView: View {
                 isTextFieldFocused = false // dismiss keyboard when tapping anywhere outside
             }
             HStack {
-                TextField("Ask about BART...", text: $query)
+                TextField("Ask about BART...", text: $chatbotVM.query)
                     .padding()
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(13.0)
@@ -71,8 +69,8 @@ struct ChatbotView: View {
                     .ignoresSafeArea(.all)
                 Button{
                     Task {
-                        await chatbotVM.processQuery(query, userLocation: userLocation)
-                        query = ""
+                        await chatbotVM.processQuery(chatbotVM.query, userLocation: chatbotVM.userLocation)
+                        chatbotVM.query = ""
                     }
                 } label: {
                     Text("Send")
@@ -95,7 +93,7 @@ struct ChatbotView: View {
             locationManager.requestLocation()
         }
         .onReceive(locationManager.$location) { location in
-            self.userLocation = location
+            chatbotVM.userLocation = location
         }
     }
     

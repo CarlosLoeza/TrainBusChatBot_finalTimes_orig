@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		076E7B652EB53D8300254F78 /* TrainListModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B642EB53D8300254F78 /* TrainListModels.swift */; };
+		076E7B682EB9595200254F78 /* BartNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B672EB9595200254F78 /* BartNetworkManager.swift */; };
 		07DB13662EA015CB00C6487E /* TrainBusChatBotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */; };
 		07DB136A2EA015CC00C6487E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB13692EA015CC00C6487E /* Assets.xcassets */; };
 		07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */; };
@@ -67,6 +68,7 @@
 
 /* Begin PBXFileReference section */
 		076E7B642EB53D8300254F78 /* TrainListModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainListModels.swift; sourceTree = "<group>"; };
+		076E7B672EB9595200254F78 /* BartNetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartNetworkManager.swift; sourceTree = "<group>"; };
 		07DB13622EA015CB00C6487E /* TrainBusChatBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainBusChatBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotApp.swift; sourceTree = "<group>"; };
 		07DB13692EA015CC00C6487E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -163,6 +165,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		076E7B662EB9595200254F78 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				076E7B672EB9595200254F78 /* BartNetworkManager.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		07DB13592EA015CB00C6487E = {
 			isa = PBXGroup;
 			children = (
@@ -187,14 +197,15 @@
 			isa = PBXGroup;
 			children = (
 				07DB146B2EA3017C00C6487E /* LaunchScreen.storyboard */,
+				07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */,
 				07DB14522EA03CA300C6487E /* Helper */,
 				07DB14262EA02A4400C6487E /* GTFSTransitData_BA */,
 				076E7B632EB53D6300254F78 /* Models */,
-				07DB145F2EA0512900C6487E /* BartManagerWrapper.swift */,
-				07DB14652EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift */,
 				076E7B622EB53D1700254F78 /* View Models */,
 				076E7B612EB53CFE00254F78 /* Views */,
-				07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */,
+				076E7B662EB9595200254F78 /* Network */,
+				07DB145F2EA0512900C6487E /* BartManagerWrapper.swift */,
+				07DB14652EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift */,
 				07DB13692EA015CC00C6487E /* Assets.xcassets */,
 				07DB136B2EA015CC00C6487E /* Preview Content */,
 			);
@@ -421,6 +432,7 @@
 				07DB14632EA0513300C6487E /* ChatbotView.swift in Sources */,
 				07DB14222EA025A800C6487E /* BartManager.swift in Sources */,
 				07DB14602EA0512900C6487E /* BartManagerWrapper.swift in Sources */,
+				076E7B682EB9595200254F78 /* BartNetworkManager.swift in Sources */,
 				07DB14642EA0513300C6487E /* ChatbotViewModel.swift in Sources */,
 				07DB145C2EA044AF00C6487E /* TrainListViewModel.swift in Sources */,
 				07DB14542EA03CB100C6487E /* LocationManager.swift in Sources */,
