@@ -25,6 +25,13 @@ struct TrainBusChatBotApp: App {
                             Label("Chatbot", systemImage: "message.fill")
                         }
                 }
+                .onAppear {
+                    let appearance = UITabBarAppearance()
+                    appearance.configureWithOpaqueBackground()
+                    appearance.backgroundColor = .systemGray6
+                    UITabBar.appearance().standardAppearance = appearance
+                    UITabBar.appearance().scrollEdgeAppearance = appearance
+                }
             } else {
                 ProgressView("Loading BART data...")
             }

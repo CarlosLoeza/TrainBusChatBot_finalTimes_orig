@@ -90,7 +90,7 @@ struct ChatbotView: View {
         }
         .navigationTitle("BART Chatbot")
         .onAppear {
-            // locationManager.requestLocation() // Temporarily commented out for debugging UI delay
+            locationManager.requestLocation()
         }
         .onReceive(locationManager.$location) { location in
             self.userLocation = location

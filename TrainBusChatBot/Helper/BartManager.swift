@@ -75,6 +75,7 @@ class BartManager {
     private var routeById: [String: Route] = [:]
     private var stopTimesByTripId: [String: [StopTime]] = [:]
     private var routesByStopId: [String: Set<String>] = [:]
+    public var terminusStations: Set<String> = []
 
     
     // Mapping from station alias to BART abbreviation
@@ -125,6 +126,7 @@ class BartManager {
         "MacArthur": "mcar",
         "Millbrae": "mlbr",
         "Millbrae (Caltrain Transfer Platform)": "mlbr",
+        "SFO/Millbrae": "mlbr",
         "Milpitas": "mlpt",
         "Montgomery Street": "mont",
         "Montgomery St": "mont",
@@ -149,6 +151,7 @@ class BartManager {
         "San Bruno": "sbrn",
         "San Francisco International Airport": "sfia",
         "SFO": "sfia",
+        "sfo": "sfia",
         "San Leandro": "sanl",
         "South Hayward": "shay",
         "South San Francisco": "ssan",
@@ -188,6 +191,7 @@ class BartManager {
         buildRouteByIdMap()
         buildStopTimesByTripIdMap()
         buildRoutesByStopIdMap()
+        buildTerminusStationsMap()
         printStationRouteInfo()
 
         print("GTFS Data and indexes loaded.")
@@ -385,6 +389,67 @@ class BartManager {
 
     func findConnectingTrips(from originStationName: String, to destinationStationName: String) async -> [ConnectingTripInfo] {
         print("--- Finding Connecting Trips (Optimized) from \(originStationName) to \(destinationStationName) ---")
+
+        guard let originStopIds = stopNameToIds[originStationName.lowercased()] else {
+            print("Error: Could not find stop IDs for origin station: \(originStationName)")
+            return []
+        }
+
+        guard let destinationStopIds = stopNameToIds[destinationStationName.lowercased()] else {
+            print("Error: Could not find stop IDs for destination station: \(destinationStationName)")
+            return []
+        }
+
+        let tripsThroughOrigin = stopTimes.filter { originStopIds.contains($0.stop_id) }
+        let tripsThroughDestination = stopTimes.filter { destinationStopIds.contains($0.stop_id) }
+
+        let originTripIds = Set(tripsThroughOrigin.map { $0.trip_id })
+        let destinationTripIds = Set(tripsThroughDestination.map { $0.trip_id })
+
+        let commonTripIds = originTripIds.intersection(destinationTripIds)
+        print("Found \(commonTripIds.count) common trips.")
+
+        var connectingTrips: [ConnectingTripInfo] = []
+
+        for tripId in commonTripIds {
+            guard let trip = tripsById[tripId] else {
+                continue
+            }
+
+            guard let stopTimesForTrip = stopTimesByTripId[tripId] else {
+                continue
+            }
+
+            guard let originStopTime = stopTimesForTrip.first(where: { originStopIds.contains($0.stop_id) }),
+                  let destinationStopTime = stopTimesForTrip.first(where: { destinationStopIds.contains($0.stop_id) }) else {
+                continue
+            }
+            
+            guard let originSequence = Int(originStopTime.stop_sequence),
+                  let destinationSequence = Int(destinationStopTime.stop_sequence),
+                  destinationSequence > originSequence else {
+                continue
+            }
+
+            let destinationName = destinationStationName.lowercased()
+            let headsign = trip.trip_headsign.lowercased()
+
+            guard destinationName.contains(headsign) else {
+                print("Trip headsign '\(headsign)' is not contained in '\(destinationName)'. Skipping.")
+                continue
+            }
+            
+            print("Found connecting trip: \(trip.trip_headsign) via trip \(tripId)")
+            let connectingTrip = ConnectingTripInfo(tripId: trip.trip_id, tripHeadsign: trip.trip_headsign, directionId: trip.direction_id)
+            connectingTrips.append(connectingTrip)
+        }
+        
+        print("Found \(connectingTrips.count) total connecting trip possibilities.")
+        return connectingTrips
+    }
+
+    func findTripsPassingThrough(originStationName: String, destinationStationName: String) async -> [ConnectingTripInfo] {
+        print("--- Finding Trips Passing Through (Optimized) from \(originStationName) to \(destinationStationName) ---")
 
         guard let originStopIds = stopNameToIds[originStationName.lowercased()] else {
             print("Error: Could not find stop IDs for origin station: \(originStationName)")
@@ -635,5 +700,22 @@ class BartManager {
             }
         }
         print("---------------------------------")
+    }
+
+    private func buildTerminusStationsMap() {
+        print("Building terminus stations map...")
+        var terminusStopIds: Set<String> = []
+        for trip in trips {
+            if let stopTimesForTrip = stopTimesByTripId[trip.trip_id], let lastStopTime = stopTimesForTrip.last {
+                terminusStopIds.insert(lastStopTime.stop_id)
+            }
+        }
+
+        self.terminusStations = Set(stops.filter { terminusStopIds.contains($0.stop_id) }.map { $0.stop_name.lowercased() })
+        print("Terminus stations map built. Contains \(terminusStations.count) entries.")
+    }
+
+    public func isTerminus(stationName: String) -> Bool {
+        return terminusStations.contains(stationName.lowercased())
     }
 }
