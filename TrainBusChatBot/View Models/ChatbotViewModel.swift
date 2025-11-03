@@ -13,7 +13,8 @@ struct Message: Identifiable, Equatable {
 class ChatbotViewModel: ObservableObject {
     @Published var messages: [Message] = []
     @Published var isLoadingResponse: Bool = false
-    
+    @Published var query: String = ""
+    @Published var userLocation: CLLocation? // To pass to the chatbotVM
     private let bartManager: BartManager
     private let trainListViewModel: TrainListViewModel
     private let sortedAliases: [String]
