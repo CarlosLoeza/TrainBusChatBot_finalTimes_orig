@@ -16,20 +16,8 @@ struct ChatbotView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(chatbotVM.messages) { message in
-                            HStack {
-                                if message.isUser {
-                                    Spacer()
-                                }
-                                Text(message.content)
-                                    .padding(10)
-                                    .background(message.isUser ? Color.blue : Color.gray.opacity(0.2))
-                                    .foregroundColor(message.isUser ? .white : .primary)
-                                    .cornerRadius(10)
-                                if !message.isUser {
-                                    Spacer()
-                                }
-                            }
-                            .id(message.id) // Add an ID to each message for scrolling
+                            messageRow(message: message)
+                                .id(message.id)
                         }
                     }
                     .padding(.horizontal)
@@ -96,13 +84,43 @@ struct ChatbotView: View {
             chatbotVM.userLocation = location
         }
     }
+
+    @ViewBuilder
+    private func messageRow(message: Message) -> some View {
+        HStack {
+            if message.isUser {
+                Spacer()
+                HStack {
+                    Text(message.content)
+                    Button(action: {
+                        chatbotVM.toggleFavorite(query: message.content)
+                    }) {
+                        Image(systemName: chatbotVM.isFavorite(query: message.content) ? "star.fill" : "star")
+                            .foregroundColor(.yellow)
+                    }
+                }
+                .padding(10)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            } else {
+                Text(message.content)
+                    .padding(10)
+                    .background(Color.gray.opacity(0.2))
+                    .foregroundColor(.primary)
+                    .cornerRadius(10)
+                Spacer()
+            }
+        }
+    }
     
     private func scrollToBottom(scrollViewProxy: ScrollViewProxy) {
-        if let lastMessage = chatbotVM.messages.last {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { // Add a small delay
-                withAnimation {
-                    scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
-                }
+        guard !chatbotVM.messages.isEmpty else { return }
+        let lastMessageId = chatbotVM.messages.last!.id
+
+        DispatchQueue.main.async {
+            withAnimation {
+                scrollViewProxy.scrollTo(lastMessageId, anchor: .bottom)
             }
         }
     }

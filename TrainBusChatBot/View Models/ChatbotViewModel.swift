@@ -14,10 +14,14 @@ class ChatbotViewModel: ObservableObject {
     @Published var isLoadingResponse: Bool = false
     @Published var query: String = ""
     @Published var userLocation: CLLocation? // To pass to the chatbotVM
+    @Published var favoriteRoutes: [FavoriteRoute] = []
+
     private let bartManager: BartManager
     private let trainListViewModel: TrainListViewModel
     private let sortedAliases: [String]
-    
+    private let userDefaults = UserDefaults.standard
+    private let favoriteRoutesKey = "favoriteRoutes"
+
     init(bartManager: BartManager) {
         self.bartManager = bartManager
         self.trainListViewModel = TrainListViewModel(bartManager: bartManager)
@@ -25,8 +29,46 @@ class ChatbotViewModel: ObservableObject {
         
         // Add initial prompt message
         messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Daly City BART' or 'Next Daly City Bart to Powell' if you know your start and destination stop.", isUser: false))
+        loadFavoriteRoutes()
     }
-    
+
+    private func loadFavoriteRoutes() {
+        if let data = userDefaults.data(forKey: favoriteRoutesKey) {
+            if let decodedRoutes = try? JSONDecoder().decode([FavoriteRoute].self, from: data) {
+                favoriteRoutes = decodedRoutes
+            }
+        }
+    }
+
+    private func saveFavoriteRoutes() {
+        if let encodedRoutes = try? JSONEncoder().encode(favoriteRoutes) {
+            userDefaults.set(encodedRoutes, forKey: favoriteRoutesKey)
+        }
+    }
+
+    func toggleFavorite(query: String) {
+        if isFavorite(query: query) {
+            favoriteRoutes.removeAll { $0.query == query }
+        } else {
+            let (originStationName, destinationStationName) = extractStationNames(from: query)
+            let originStationAbbr = findStation(by: originStationName ?? "")?.abbr
+            let destinationStationAbbr = findStation(by: destinationStationName ?? "")?.abbr
+            
+            let newFavorite = FavoriteRoute(id: UUID(), query: query, originStationAbbr: originStationAbbr, destinationStationAbbr: destinationStationAbbr)
+            favoriteRoutes.append(newFavorite)
+        }
+        saveFavoriteRoutes()
+    }
+
+    func isFavorite(query: String) -> Bool {
+        return favoriteRoutes.contains { $0.query == query }
+    }
+
+    func removeFavorite(at offsets: IndexSet) {
+        favoriteRoutes.remove(atOffsets: offsets)
+        saveFavoriteRoutes()
+    }
+
     func processQuery(_ query: String, userLocation: CLLocation?) async {
         isLoadingResponse = true
         messages.append(Message(content: query, isUser: true))
@@ -72,13 +114,12 @@ class ChatbotViewModel: ObservableObject {
     }
 
     private func handleConnectingTrainQuery(query: String) async -> String {
-        let extractedDestinationStationName = extractDestinationStationName(from: query)
-        let extractedOriginStationName = extractStationName(from: query)
+        let (originStationName, destinationStationName) = extractStationNames(from: query)
 
-        guard let originStationName = extractedOriginStationName,
-              let destinationStationName = extractedDestinationStationName,
-              let originStation = findStation(by: originStationName),
-              let destinationStation = findStation(by: destinationStationName) else {
+        guard let originName = originStationName,
+              let destinationName = destinationStationName,
+              let originStation = findStation(by: originName),
+              let destinationStation = findStation(by: destinationName) else {
             return "Please specify a valid origin and destination, for example: 'next Powell BART to Colma'."
         }
 
@@ -105,7 +146,7 @@ class ChatbotViewModel: ObservableObject {
                     return "No real-time trains from \(originStation.name) are heading towards \(destinationStation.name) at the moment."
                 } else {
                     var responseText = "Next trains from \(originStation.name) towards \(destinationStation.name):\n"
-                    responseText += formatFilteredTrains(filteredETDs, queryDestinationName: destinationStationName)
+                    responseText += formatFilteredTrains(filteredETDs, queryDestinationName: destinationName)
                     return responseText
                 }
             }
@@ -113,10 +154,10 @@ class ChatbotViewModel: ObservableObject {
     }
 
     private func handleNextTrainQuery(query: String) async -> String {
-        let extractedOriginStationName = extractStationName(from: query)
+        let (originStationName, _) = extractStationNames(from: query)
 
-        guard let originStationName = extractedOriginStationName,
-              let originStation = findStation(by: originStationName) else {
+        guard let originName = originStationName,
+              let originStation = findStation(by: originName) else {
             return "I couldn't understand the station name. Please try again."
         }
 
@@ -185,14 +226,33 @@ class ChatbotViewModel: ObservableObject {
         return nil
     }
 
-    
-    
-    private func extractStationName(from query: String) -> String? {
+    private func extractStationNames(from query: String) -> (origin: String?, destination: String?) {
         let lowercasedQuery = query.lowercased()
+        var originPart = lowercasedQuery
+        var destinationPart: String?
 
-        if let nextRange = lowercasedQuery.range(of: "next "), let bartRange = lowercasedQuery.range(of: " bart") {
+        let separators = [" to ", " towards "]
+        for separator in separators {
+            if let range = lowercasedQuery.range(of: separator) {
+                originPart = String(lowercasedQuery[..<range.lowerBound])
+                destinationPart = String(lowercasedQuery[range.upperBound...])
+                break
+            }
+        }
+
+        let origin = findStationAlias(in: originPart)
+        var destination: String?
+        if let destPart = destinationPart {
+            destination = findStationAlias(in: destPart)
+        }
+
+        return (origin, destination)
+    }
+
+    private func findStationAlias(in text: String) -> String? {
+        if let nextRange = text.range(of: "next "), let bartRange = text.range(of: " bart") {
             if nextRange.upperBound < bartRange.lowerBound {
-                let stationName = String(lowercasedQuery[nextRange.upperBound..<bartRange.lowerBound]).trimmingCharacters(in: .whitespaces)
+                let stationName = String(text[nextRange.upperBound..<bartRange.lowerBound]).trimmingCharacters(in: .whitespaces)
                 for alias in self.sortedAliases {
                     if stationName == alias.lowercased() {
                         return alias
@@ -201,45 +261,11 @@ class ChatbotViewModel: ObservableObject {
             }
         }
 
-        var queryToSearch = lowercasedQuery
-        if let range = lowercasedQuery.range(of: " to ") {
-            queryToSearch = String(lowercasedQuery[..<range.lowerBound])
-        } else if let range = lowercasedQuery.range(of: " towards ") {
-            queryToSearch = String(lowercasedQuery[..<range.lowerBound])
-        }
-
         for alias in self.sortedAliases {
-            if queryToSearch.contains(alias.lowercased()) {
+            if text.contains(alias.lowercased()) {
                 return alias
             }
         }
-        
-        return nil
-    }
-    
-    private func extractDestinationStationName(from query: String) -> String? {
-        let lowercasedQuery = query.lowercased()
-        
-        if let range = lowercasedQuery.range(of: " to ") {
-            let potentialDestinationQuery = String(lowercasedQuery[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            for alias in self.sortedAliases {
-                if potentialDestinationQuery.contains(alias.lowercased()) {
-                    return alias
-                }
-            }
-        }
-        
-        if let range = lowercasedQuery.range(of: " towards ") {
-            let potentialDestinationQuery = String(lowercasedQuery[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            for alias in self.sortedAliases {
-                if potentialDestinationQuery.contains(alias.lowercased()) {
-                    return alias
-                }
-            }
-        }
-        
         return nil
     }
     
