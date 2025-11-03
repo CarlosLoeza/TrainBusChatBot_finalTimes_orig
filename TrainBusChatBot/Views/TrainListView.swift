@@ -17,8 +17,9 @@ struct TrainListView: View {
             .padding(.horizontal)
 
             if vm.isLoading {
-                Text("Loading trains for \(station.name)...")
-                    .padding()
+                ProgressView("Refreshing data…")
+                    .padding(.top)
+                Spacer()
 
             } else if !vm.filteredETDs.isEmpty {
                 List {
@@ -39,7 +40,7 @@ struct TrainListView: View {
                 }
                 .id(vm.etds.map { $0.destination }.joined()) // Force redraw when ETDs update
                 .refreshable {
-                    Task { await vm.fetchETD(for: station) }
+                    await vm.fetchETD(for: station)
                     print("✅ Refreshed: \(vm.filteredETDs.count) trains")
                 }
                 
@@ -55,21 +56,23 @@ struct TrainListView: View {
                 }
                 .refreshable {
                     await vm.fetchETD(for: station)
+                    
                 }
 
             } else if let nextTrain = vm.nextAvailableTrainTime {
                 Text("No trains running. Next train at \(nextTrain).")
                     .padding()
 
-            } else {
-                Text("No more trains for today.")
-                    .padding()
-            }
+            } 
+//                else {
+//                Text("No more trains for today.")
+//                    .padding()
+//            }
         }
         .onChange(of: selectedDirection) { newDir in
             vm.direction = newDir
         }
-        .task(id: station.abbr) {
+        .task {
             vm.direction = selectedDirection
             await vm.fetchETD(for: station)
             print("✅ Initial fetch complete: \(vm.filteredETDs.count) trains")

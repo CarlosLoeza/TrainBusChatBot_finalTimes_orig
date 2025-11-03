@@ -32,7 +32,6 @@ class TrainListViewModel: ObservableObject {
         defer { isLoading = false }
 
         let urlString = "https://api.bart.gov/api/etd.aspx?cmd=etd&orig=\(station.abbr.lowercased())&key=\(apiKey)&json=y"
-
         guard let url = URL(string: urlString) else { return }
 
         do {
@@ -41,14 +40,15 @@ class TrainListViewModel: ObservableObject {
             self.etds = response.root.station.first?.etd ?? []
             print("✅ Fetch success: \(etds.count) ETDs")
         } catch {
-            if let urlError = error as? URLError, urlError.code == .cancelled {
-                print("⚠️ Fetch cancelled (refresh or reload)")
+            // Ignore cancellation gracefully
+            if (error as? URLError)?.code == .cancelled {
                 return
             }
             print("❌ Fetch failed: \(error.localizedDescription)")
             self.etds = []
         }
     }
+
 
     func fetchStationSchedule(for abbr: String) async {
         guard let url = URL(string: "https://api.bart.gov/api/sched.aspx?cmd=stnsched&orig=\(abbr)&key=\(apiKey)&json=y") else {
