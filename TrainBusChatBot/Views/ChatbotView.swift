@@ -56,9 +56,11 @@ struct ChatbotView: View {
                     .focused($isTextFieldFocused)
                     .ignoresSafeArea(.all)
                 Button{
-                    Task {
-                        await chatbotVM.processQuery(chatbotVM.query, userLocation: chatbotVM.userLocation)
-                        chatbotVM.query = ""
+                    if !chatbotVM.query.isEmpty{
+                        Task {
+                            await chatbotVM.processQuery(chatbotVM.query, userLocation: chatbotVM.userLocation)
+                            chatbotVM.query = ""
+                        }
                     }
                 } label: {
                     Text("Send")

@@ -3,6 +3,7 @@ import SwiftUI
 struct FavoritesView: View {
     @ObservedObject var chatbotVM: ChatbotViewModel
     @Binding var selectedTab: Int
+    @State private var isProcessingTap = false // New state variable
 
     var body: some View {
         NavigationView {
@@ -12,9 +13,14 @@ struct FavoritesView: View {
                         HStack {
                             Text(route.name)
                                 .onTapGesture {
-                                    Task {
-                                        await chatbotVM.processQuery(route.query, userLocation: chatbotVM.userLocation)
-                                        selectedTab = 1 // Switch to ChatbotView
+                                    if !isProcessingTap { // Only process if not already processing
+                                        isProcessingTap = true // Set flag
+                                        Task {
+                                            await chatbotVM.processQuery(route.query, userLocation: chatbotVM.userLocation)
+                                            selectedTab = 1
+                                            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+                                            isProcessingTap = false // Reset flag after delay
+                                        }
                                     }
                                 }
                             Spacer()
@@ -25,6 +31,7 @@ struct FavoritesView: View {
                                     .foregroundColor(.yellow)
                             }
                         }
+                        .disabled(isProcessingTap) // Disable the row during processing
                     }
                     .onDelete(perform: deleteRoute)
                 }
@@ -34,9 +41,14 @@ struct FavoritesView: View {
                         HStack {
                             Text(station.name)
                                 .onTapGesture {
-                                    Task {
-                                        await chatbotVM.processQuery(station.query, userLocation: chatbotVM.userLocation)
-                                        selectedTab = 1 // Switch to ChatbotView
+                                    if !isProcessingTap { // Only process if not already processing
+                                        isProcessingTap = true // Set flag
+                                        Task {
+                                            await chatbotVM.processQuery(station.query, userLocation: chatbotVM.userLocation)
+                                            selectedTab = 1
+                                            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+                                            isProcessingTap = false // Reset flag after delay
+                                        }
                                     }
                                 }
                             Spacer()
@@ -47,6 +59,7 @@ struct FavoritesView: View {
                                     .foregroundColor(.yellow)
                             }
                         }
+                        .disabled(isProcessingTap) // Disable the row during processing
                     }
                     .onDelete(perform: deleteStation)
                 }

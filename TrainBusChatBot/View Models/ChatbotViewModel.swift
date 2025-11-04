@@ -21,6 +21,8 @@ class ChatbotViewModel: ObservableObject {
     private let sortedAliases: [String]
     private let userDefaults = UserDefaults.standard
     private let favoriteRoutesKey = "favoriteRoutes"
+    private var lastQueryProcessTime: Date? // New property for debouncing
+    private let debounceInterval: TimeInterval = 0.5 // 0.5 seconds debounce interval
 
     init(bartManager: BartManager) {
         self.bartManager = bartManager
@@ -92,6 +94,13 @@ class ChatbotViewModel: ObservableObject {
     }
 
     func processQuery(_ query: String, userLocation: CLLocation?) async {
+        // Debounce logic
+        if let lastTime = lastQueryProcessTime, Date().timeIntervalSince(lastTime) < debounceInterval {
+            print("Debounced: Query ignored due to rapid tapping.")
+            return
+        }
+        lastQueryProcessTime = Date()
+
         isLoadingResponse = true
         messages.append(Message(content: query, isUser: true))
         
