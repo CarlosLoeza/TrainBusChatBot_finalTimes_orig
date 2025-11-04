@@ -19,21 +19,23 @@ struct TrainBusChatBotApp: App {
                 TabView(selection: $selectedTab) {
                     NearbyStopsView_ViewModelWrapper(bartManager: bartManager)
                         .tabItem {
-                            Label("Nearby Stops", systemImage: "location.fill")
+                            Label("Nearby", systemImage: "location.fill")
                         }
                         .tag(0)
+                    
+                    FavoritesView(chatbotVM: chatbotVM, selectedTab: $selectedTab)
+                        .tabItem {
+                            Label("Favorites", systemImage: "star.fill")
+                        }
+                        .tag(1)
 
                     ChatbotView(chatbotVM: chatbotVM)
                         .tabItem {
                             Label("Chatbot", systemImage: "message.fill")
                         }
-                        .tag(1)
-
-                    FavoritesView(chatbotVM: chatbotVM, selectedTab: $selectedTab)
-                        .tabItem {
-                            Label("Favorites", systemImage: "star.fill")
-                        }
                         .tag(2)
+
+                    
                 }
                 .onAppear {
                     let appearance = UITabBarAppearance()

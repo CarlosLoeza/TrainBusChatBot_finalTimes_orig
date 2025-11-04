@@ -57,7 +57,17 @@ class ChatbotViewModel: ObservableObject {
             let destinationStationAbbr = findStation(by: destinationStationName ?? "")?.abbr
             
             let type: FavoriteType = (originStationName != nil && destinationStationName != nil) ? .route : .station
-            
+            if type == .route{
+                if let origin = originStationName, let destination = destinationStationName {
+                    let description = "\(origin) Bart to \(destination)"
+                    print("testing route: \(description)")
+                }
+            } else {
+                if let origin = originStationName{
+                    let description = "\(origin) Bart"
+                    print("testing station: \(description)")
+                }
+            }
             let newFavorite = FavoriteRoute(id: UUID(), query: query, originStationAbbr: originStationAbbr, destinationStationAbbr: destinationStationAbbr, type: type, name: query)
             favoriteRoutes.append(newFavorite)
         }
@@ -65,11 +75,15 @@ class ChatbotViewModel: ObservableObject {
     }
 
     var routeFavorites: [FavoriteRoute] {
-        favoriteRoutes.filter { $0.type == .route }
+        favoriteRoutes
+            .filter{ $0.type == .route }
+            .sorted{ $0.name < $1.name}
     }
 
     var stationFavorites: [FavoriteRoute] {
-        favoriteRoutes.filter { $0.type == .station }
+        favoriteRoutes
+            .filter { $0.type == .station }
+            .sorted { $0.name < $1.name }
     }
 
     func isFavorite(query: String) -> Bool {

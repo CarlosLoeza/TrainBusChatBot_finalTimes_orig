@@ -70,6 +70,7 @@ class TrainListViewModel: ObservableObject {
         }
     }
     
+    /*
     func printETDs(etds: [BartETD], stationName: String) {
         print("--- ETDs for \(stationName) ---")
         for etd in etds {
@@ -113,6 +114,7 @@ class TrainListViewModel: ObservableObject {
         }
         print("----------------------------------")
     }
+     */
     
     func fetchFilteredETDs(originStation: Station, destinationStation: Station, direction: String) async {
         isLoading = true
