@@ -54,10 +54,20 @@ class ChatbotViewModel: ObservableObject {
             let originStationAbbr = findStation(by: originStationName ?? "")?.abbr
             let destinationStationAbbr = findStation(by: destinationStationName ?? "")?.abbr
             
-            let newFavorite = FavoriteRoute(id: UUID(), query: query, originStationAbbr: originStationAbbr, destinationStationAbbr: destinationStationAbbr)
+            let type: FavoriteType = (originStationName != nil && destinationStationName != nil) ? .route : .station
+            
+            let newFavorite = FavoriteRoute(id: UUID(), query: query, originStationAbbr: originStationAbbr, destinationStationAbbr: destinationStationAbbr, type: type, name: query)
             favoriteRoutes.append(newFavorite)
         }
         saveFavoriteRoutes()
+    }
+
+    var routeFavorites: [FavoriteRoute] {
+        favoriteRoutes.filter { $0.type == .route }
+    }
+
+    var stationFavorites: [FavoriteRoute] {
+        favoriteRoutes.filter { $0.type == .station }
     }
 
     func isFavorite(query: String) -> Bool {
@@ -66,6 +76,18 @@ class ChatbotViewModel: ObservableObject {
 
     func removeFavorite(at offsets: IndexSet) {
         favoriteRoutes.remove(atOffsets: offsets)
+        saveFavoriteRoutes()
+    }
+
+    func removeRouteFavorite(at offsets: IndexSet) {
+        let favoritesToRemove = offsets.map { routeFavorites[$0] }
+        favoriteRoutes.removeAll { favoritesToRemove.contains($0) }
+        saveFavoriteRoutes()
+    }
+
+    func removeStationFavorite(at offsets: IndexSet) {
+        let favoritesToRemove = offsets.map { stationFavorites[$0] }
+        favoriteRoutes.removeAll { favoritesToRemove.contains($0) }
         saveFavoriteRoutes()
     }
 

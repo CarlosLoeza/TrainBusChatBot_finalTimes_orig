@@ -145,8 +145,8 @@
 			isa = PBXGroup;
 			children = (
 				07DB14612EA0513300C6487E /* ChatbotView.swift */,
-				07DB145D2EA0510300C6487E /* NearbyStopsView.swift */,
 				076E7B692EB971CA00254F78 /* FavoritesView.swift */,
+				07DB145D2EA0510300C6487E /* NearbyStopsView.swift */,
 				07DB14592EA044AF00C6487E /* TrainListView.swift */,
 			);
 			path = Views;
