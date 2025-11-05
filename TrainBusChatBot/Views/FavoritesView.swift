@@ -16,7 +16,7 @@ struct FavoritesView: View {
                                     if !isProcessingTap { // Only process if not already processing
                                         isProcessingTap = true // Set flag
                                         Task {
-                                            await chatbotVM.processQuery(route.query, userLocation: chatbotVM.userLocation)
+                                            await chatbotVM.processFavorite(route)
                                             selectedTab = 2
                                             try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
                                             isProcessingTap = false // Reset flag after delay
@@ -44,7 +44,7 @@ struct FavoritesView: View {
                                     if !isProcessingTap { // Only process if not already processing
                                         isProcessingTap = true // Set flag
                                         Task {
-                                            await chatbotVM.processQuery(station.query, userLocation: chatbotVM.userLocation)
+                                            await chatbotVM.processFavorite(station)
                                             selectedTab = 2
                                             try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
                                             isProcessingTap = false // Reset flag after delay
