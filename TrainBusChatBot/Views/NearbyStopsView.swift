@@ -22,8 +22,6 @@ struct NearbyStopsView: View {
                 if bartViewModel.isLoadingStops {
                     ProgressView("Finding nearby stops...")
                 } else if let location = locationManager.location {
-//                    Text("Your location: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-                    
                     if let distance = bartViewModel.nearestStopDistance {
                         Text("Distance to nearest stop: \(String(format: "%.2f", distance)) meters")
                     }
@@ -42,7 +40,9 @@ struct NearbyStopsView: View {
                                         .font(.subheadline)
                                 }
                             }
+                            .accessibilityIdentifier("nearbyStopRow_\(stop.stop_name)")
                         }
+                        .accessibilityIdentifier("nearbyStopsList")
                     }
                 } else {
                     Text("Tap 'Find Nearby BART Stops' to get your location.")

@@ -11,6 +11,7 @@
 		076E7B682EB9595200254F78 /* BartNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B672EB9595200254F78 /* BartNetworkManager.swift */; };
 		076E7B6A2EB971CA00254F78 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B692EB971CA00254F78 /* FavoritesView.swift */; };
 		076E7B6C2EB9722D00254F78 /* FavoriteRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B6B2EB9722D00254F78 /* FavoriteRoute.swift */; };
+		076E7BBE2EBBEBC200254F78 /* NearbyViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BBD2EBBEBC200254F78 /* NearbyViewUITests.swift */; };
 		07DB13662EA015CB00C6487E /* TrainBusChatBotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */; };
 		07DB136A2EA015CC00C6487E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB13692EA015CC00C6487E /* Assets.xcassets */; };
 		07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */; };
@@ -74,6 +75,7 @@
 		076E7B692EB971CA00254F78 /* FavoritesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
 		076E7B6B2EB9722D00254F78 /* FavoriteRoute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteRoute.swift; sourceTree = "<group>"; };
 		076E7BB52EBB2DDA00254F78 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		076E7BBD2EBBEBC200254F78 /* NearbyViewUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyViewUITests.swift; sourceTree = "<group>"; };
 		07DB13622EA015CB00C6487E /* TrainBusChatBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainBusChatBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotApp.swift; sourceTree = "<group>"; };
 		07DB13692EA015CC00C6487E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */,
+				076E7BBD2EBBEBC200254F78 /* NearbyViewUITests.swift */,
 				07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */,
 			);
 			path = TrainBusChatBotUITests;
@@ -470,6 +473,7 @@
 			files = (
 				07DB13832EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift in Sources */,
 				07DB13812EA015CC00C6487E /* TrainBusChatBotUITests.swift in Sources */,
+				076E7BBE2EBBEBC200254F78 /* NearbyViewUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
