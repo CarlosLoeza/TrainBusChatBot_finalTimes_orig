@@ -8,17 +8,22 @@ struct Message: Identifiable, Equatable {
 }
 
 
-
 @MainActor
 class ChatbotViewModel: ObservableObject {
     @Published var messages: [Message] = []
     @Published var isLoadingResponse: Bool = false
     @Published var query: String = ""
     @Published var userLocation: CLLocation? // To pass to the chatbotVM
+    @Published var favoriteRoutes: [FavoriteRoute] = []
+
     private let bartManager: BartManager
     private let trainListViewModel: TrainListViewModel
     private let sortedAliases: [String]
-    
+    private let userDefaults = UserDefaults.standard
+    private let favoriteRoutesKey = "favoriteRoutes"
+    private var lastQueryProcessTime: Date? // New property for debouncing
+    private let debounceInterval: TimeInterval = 0.5 // 0.5 seconds debounce interval
+
     init(bartManager: BartManager) {
         self.bartManager = bartManager
         self.trainListViewModel = TrainListViewModel(bartManager: bartManager)
@@ -26,131 +31,95 @@ class ChatbotViewModel: ObservableObject {
         
         // Add initial prompt message
         messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Daly City BART' or 'Next Daly City Bart to Powell' if you know your start and destination stop.", isUser: false))
+        loadFavoriteRoutes()
     }
-    
+
+    private func loadFavoriteRoutes() {
+        if let data = userDefaults.data(forKey: favoriteRoutesKey) {
+            if let decodedRoutes = try? JSONDecoder().decode([FavoriteRoute].self, from: data) {
+                favoriteRoutes = decodedRoutes
+            }
+        }
+    }
+
+    private func saveFavoriteRoutes() {
+        if let encodedRoutes = try? JSONEncoder().encode(favoriteRoutes) {
+            userDefaults.set(encodedRoutes, forKey: favoriteRoutesKey)
+        }
+    }
+
+    func toggleFavorite(query: String) {
+        if isFavorite(query: query) {
+            favoriteRoutes.removeAll { $0.query == query }
+        } else {
+            let (originStationName, destinationStationName) = extractStationNames(from: query)
+            let originStationAbbr = findStation(by: originStationName ?? "")?.abbr
+            let destinationStationAbbr = findStation(by: destinationStationName ?? "")?.abbr
+            let direction = extractDirection(from: query)
+
+            let type: FavoriteType = (originStationName != nil && destinationStationName != nil) ? .route : .station
+            
+            let newFavorite = FavoriteRoute(id: UUID(), query: query, originStationAbbr: originStationAbbr, destinationStationAbbr: destinationStationAbbr, type: type, name: query, direction: direction.isEmpty ? nil : direction)
+            favoriteRoutes.append(newFavorite)
+        }
+        saveFavoriteRoutes()
+    }
+
+    var routeFavorites: [FavoriteRoute] {
+        favoriteRoutes
+            .filter{ $0.type == .route }
+            .sorted{ $0.name < $1.name}
+    }
+
+    var stationFavorites: [FavoriteRoute] {
+        favoriteRoutes
+            .filter { $0.type == .station }
+            .sorted { $0.name < $1.name }
+    }
+
+    func isFavorite(query: String) -> Bool {
+        return favoriteRoutes.contains { $0.query == query }
+    }
+
+    func removeFavorite(at offsets: IndexSet) {
+        favoriteRoutes.remove(atOffsets: offsets)
+        saveFavoriteRoutes()
+    }
+
+    func removeRouteFavorite(at offsets: IndexSet) {
+        let favoritesToRemove = offsets.map { routeFavorites[$0] }
+        favoriteRoutes.removeAll { favoritesToRemove.contains($0) }
+        saveFavoriteRoutes()
+    }
+
+    func removeStationFavorite(at offsets: IndexSet) {
+        let favoritesToRemove = offsets.map { stationFavorites[$0] }
+        favoriteRoutes.removeAll { favoritesToRemove.contains($0) }
+        saveFavoriteRoutes()
+    }
+
     func processQuery(_ query: String, userLocation: CLLocation?) async {
+        // Debounce logic
+        if let lastTime = lastQueryProcessTime, Date().timeIntervalSince(lastTime) < debounceInterval {
+            print("Debounced: Query ignored due to rapid tapping.")
+            return
+        }
+        lastQueryProcessTime = Date()
+
         isLoadingResponse = true
         messages.append(Message(content: query, isUser: true))
         
-        var botResponseContent: String = ""
-        
         let lowercasedQuery = query.lowercased()
-        let extractedDestinationStationName = extractDestinationStationName(from: query)
-        let extractedOriginStationName = extractStationName(from: lowercasedQuery)
-        
+        var botResponseContent: String = ""
+
         if lowercasedQuery.contains("nearby") && lowercasedQuery.contains("bart") {
-            if let userLocation = userLocation {
-                let nearbyStops = await bartManager.findNearbyStops(from: userLocation, radius: 1000) 
-                if nearbyStops.isEmpty {
-                    botResponseContent = "No nearby BART stops found."
-                } else {
-                    var responseText = "Nearby BART stops:\n"
-                    for stop in nearbyStops {
-                        let stopLocation = CLLocation(latitude: Double(stop.stop_lat) ?? 0, longitude: Double(stop.stop_lon) ?? 0)
-                        let distanceInMeters = userLocation.distance(from: stopLocation)
-                        let distanceInMiles = self.metersToMiles(meters: distanceInMeters)
-                        let walkingTimeInMinutes = self.metersToWalkingMinutes(meters: distanceInMeters)
-                        
-                        responseText += "- \(stop.stop_name) (\(String(format: ".2f", distanceInMiles)) miles, approx. \(String(format: ".0f", walkingTimeInMinutes)) min walk)\n"
-                    }
-                    botResponseContent = responseText
-                }
-            } else {
-                botResponseContent = "I need your location to find nearby BART stops."
-            }
+            botResponseContent = await handleNearbyQuery(userLocation: userLocation)
         } else if lowercasedQuery.contains("next") && lowercasedQuery.contains("bart") && lowercasedQuery.contains("to") {
-            print("Attempting to find connecting trips...")
-            if let originStationName = extractedOriginStationName,
-               let destinationStationName = extractedDestinationStationName,
-               let originStation = findStation(by: originStationName),
-               let destinationStation = findStation(by: destinationStationName) {
-                
-                print("Successfully found stations:")
-                print("  - Origin: \(originStation.name) (Abbr: \(originStation.abbr))")
-                print("  - Destination: \(destinationStation.name) (Abbr: \(destinationStation.abbr))")
-
-                let connectingTrips = await bartManager.findTripsPassingThrough(originStationName: originStation.name, destinationStationName: destinationStation.name)
-                
-                if connectingTrips.isEmpty {
-                    botResponseContent = "No direct trains found from \(originStation.name) to \(destinationStation.name) in the schedule."
-                } else {
-                    let validDestinationAbbrs = Set(connectingTrips.compactMap { trip in
-                        return self.getAbbr(for: trip.tripHeadsign)
-                    })
-                    print("Valid destination abbreviations from GTFS: \(validDestinationAbbrs)")
-
-                    await trainListViewModel.fetchETD(for: originStation)
-                    
-                    if trainListViewModel.etds.isEmpty {
-                        botResponseContent = "Could not fetch real-time departures for \(originStation.name)."
-                    } else {
-                        let filteredETDs = trainListViewModel.etds.filter { etd in
-                            // Assumes the BartETD struct has a property `abbreviation` for the destination.
-                            print("Checking real-time train to \(etd.destination) (Abbr: \(etd.abbreviation))")
-                            let isMatch = validDestinationAbbrs.contains(etd.abbreviation.lowercased())
-                            print("Result: \(isMatch ? "Match found" : "No match").")
-                            return isMatch
-                        }
-                        
-                        if filteredETDs.isEmpty {
-                            botResponseContent = "No real-time trains from \(originStation.name) are heading towards \(destinationStation.name) at the moment."
-                        } else {
-                            var responseText = "Next trains from \(originStation.name) towards \(destinationStation.name):\n"
-                            responseText += formatFilteredTrains(filteredETDs, queryDestinationName: destinationStationName)
-                            botResponseContent = responseText
-                        }
-                    }
-                }
-            } else {
-                print("--- Failed to find stations for connecting trip ---")
-                if extractedOriginStationName == nil {
-                    print("Reason: Origin station name was not extracted.")
-                }
-                if extractedDestinationStationName == nil {
-                    print("Reason: Destination station name was not extracted.")
-                }
-                if let originName = extractedOriginStationName, findStation(by: originName) == nil {
-                    print("Reason: findStation(by: \"\(originName)\") returned nil.")
-                }
-                if let destName = extractedDestinationStationName, findStation(by: destName) == nil {
-                    print("Reason: findStation(by: \"\(destName)\") returned nil.")
-                }
-                print("----------------------------------------------------")
-                botResponseContent = "Please specify a valid origin and destination, for example: 'next Powell BART to Colma'."
-            }
+            botResponseContent = await handleConnectingTrainQuery(query: lowercasedQuery)
         } else if lowercasedQuery.contains("next") && lowercasedQuery.contains("bart") {
-            if let originStationName = extractedOriginStationName {
-                if let originStation = findStation(by: originStationName) {
-                    let userSpecifiedDirection = extractDirection(from: lowercasedQuery)
-                    self.trainListViewModel.direction = userSpecifiedDirection
-                        
-                    await trainListViewModel.fetchETD(for: originStation)
-                        
-                    if !trainListViewModel.etds.isEmpty {
-                        var responseText = "Next trains for \(originStation.name)"
-                            
-                        if !userSpecifiedDirection.isEmpty {
-                            responseText += " going \(userSpecifiedDirection)"
-                        }
-                        responseText += ":\n"
-                            
-                        let finalFilteredETDs = trainListViewModel.filteredETDs
-
-                        if finalFilteredETDs.isEmpty {
-                            responseText += "No trains found for this direction.\n"
-                        } else {
-                            responseText += formatFilteredTrains(finalFilteredETDs, queryDestinationName: nil)
-                        }
-                        botResponseContent = responseText
-                    } else if let nextTime = trainListViewModel.nextAvailableTrainTime {
-                        botResponseContent = "No real-time trains found for \(originStation.name) going \(userSpecifiedDirection.isEmpty ? "all directions" : userSpecifiedDirection). Next scheduled train at \(nextTime)."
-                    } else {
-                        botResponseContent = "No trains found for \(originStation.name) going \(userSpecifiedDirection.isEmpty ? "all directions" : userSpecifiedDirection)."
-                    }
-                }
-            }
+            botResponseContent = await handleNextTrainQuery(query: lowercasedQuery)
         } else {
-            botResponseContent = "I can help you find nearby BART stops or next train departures. Try asking 'nearby BART' or 'next Daly City BART going North'."
+            botResponseContent = handleUnknownQuery()
         }
         
         messages.append(Message(content: botResponseContent, isUser: false))
@@ -158,18 +127,162 @@ class ChatbotViewModel: ObservableObject {
         self.trainListViewModel.direction = "" // Reset direction after processing
     }
 
-    private func formatFilteredTrains(_ trains: [BartETD], queryDestinationName: String?) -> String {
-        var responseText = ""
-        let groupedEstimates = Dictionary(grouping: trains, by: { $0.destination })
+    func processFavorite(_ favorite: FavoriteRoute) async {
+        isLoadingResponse = true
+        messages.append(Message(content: favorite.name, isUser: true))
+
+        var botResponseContent: String
+
+        switch favorite.type {
+        case .route:
+            guard let originAbbr = favorite.originStationAbbr,
+                  let destAbbr = favorite.destinationStationAbbr,
+                  let originStation = findStation(byAbbr: originAbbr),
+                  let destinationStation = findStation(byAbbr: destAbbr) else {
+                botResponseContent = "Sorry, there was an error processing this favorite route."
+                break
+            }
+            botResponseContent = await executeConnectingTrainQuery(origin: originStation, destination: destinationStation)
+
+        case .station:
+            guard let originAbbr = favorite.originStationAbbr,
+                  let station = findStation(byAbbr: originAbbr) else {
+                botResponseContent = "Sorry, there was an error processing this favorite station."
+                break
+            }
+            let direction = favorite.direction ?? ""
+            botResponseContent = await executeNextTrainQuery(station: station, direction: direction)
+        }
+
+        messages.append(Message(content: botResponseContent, isUser: false))
+        isLoadingResponse = false
+    }
+
+    private func executeConnectingTrainQuery(origin originStation: Station, destination destinationStation: Station) async -> String {
+        let connectingTrips = await bartManager.findTripsPassingThrough(originStationName: originStation.name, destinationStationName: destinationStation.name)
         
-        for (destination, etdsForDestination) in groupedEstimates {
-            responseText += "To \(destination):\n"
-            for etd in etdsForDestination {
-                for estimate in etd.estimate {
-                    responseText += "  - \(estimate.minutes) min (Platform \(estimate.platform ?? "?"))\n"
+        if connectingTrips.isEmpty {
+            return "No direct trains found from \(originStation.name) to \(destinationStation.name) in the schedule."
+        } else {
+            let validDestinationAbbrs = Set(connectingTrips.compactMap { trip in
+                return self.getAbbr(for: trip.tripHeadsign)
+            })
+
+            await trainListViewModel.fetchETD(for: originStation)
+            
+            if trainListViewModel.etds.isEmpty {
+                return "Could not fetch real-time departures for \(originStation.name)."
+            } else {
+                let filteredETDs = trainListViewModel.etds.filter { etd in
+                    let isMatch = validDestinationAbbrs.contains(etd.abbreviation.lowercased())
+                    return isMatch
+                }
+                
+                if filteredETDs.isEmpty {
+                    return "No real-time trains from \(originStation.name) are heading towards \(destinationStation.name) at the moment."
+                } else {
+                    var responseText = "Next trains from \(originStation.name) towards \(destinationStation.name):\n"
+                    responseText += formatFilteredTrains(filteredETDs, queryDestinationName: destinationStation.name)
+                    return responseText
                 }
             }
         }
+    }
+
+    private func executeNextTrainQuery(station: Station, direction: String) async -> String {
+        self.trainListViewModel.direction = direction
+        
+        await trainListViewModel.fetchETD(for: station)
+            
+        if !trainListViewModel.etds.isEmpty {
+            var responseText = "Next trains for \(station.name)"
+                
+            if !direction.isEmpty {
+                responseText += " going \(direction)"
+            }
+            responseText += ":\n"
+                
+            let finalFilteredETDs = trainListViewModel.filteredETDs
+
+            if finalFilteredETDs.isEmpty {
+                responseText += "No trains found for this direction.\n"
+            } else {
+                responseText += formatFilteredTrains(finalFilteredETDs, queryDestinationName: nil)
+            }
+            return responseText
+        } else if let nextTime = trainListViewModel.nextAvailableTrainTime {
+            return "No real-time trains found for \(station.name) going \(direction.isEmpty ? "all directions" : direction). Next scheduled train at \(nextTime)."
+        } else {
+            return "No trains found for \(station.name) going \(direction.isEmpty ? "all directions" : direction)."
+        }
+    }
+
+    private func handleNearbyQuery(userLocation: CLLocation?) async -> String {
+        guard let userLocation = userLocation else {
+            return "I need your location to find nearby BART stops."
+        }
+
+        let nearbyStops = await bartManager.findNearbyStops(from: userLocation, radius: 1000)
+        if nearbyStops.isEmpty {
+            return "No nearby BART stops found."
+        } else {
+            var responseText = "Nearby BART stops:\n"
+            for stop in nearbyStops {
+                let stopLocation = CLLocation(latitude: Double(stop.stop_lat) ?? 0, longitude: Double(stop.stop_lon) ?? 0)
+                let distanceInMeters = userLocation.distance(from: stopLocation)
+                let distanceInMiles = self.metersToMiles(meters: distanceInMeters)
+                let walkingTimeInMinutes = self.metersToWalkingMinutes(meters: distanceInMeters)
+                
+                responseText += "- \(stop.stop_name) (\(String(format: ".2f", distanceInMiles)) miles, approx. \(String(format: ".0f", walkingTimeInMinutes)) min walk)\n"
+            }
+            return responseText
+        }
+    }
+
+    private func handleConnectingTrainQuery(query: String) async -> String {
+        let (originStationName, destinationStationName) = extractStationNames(from: query)
+
+        guard let originName = originStationName,
+              let destinationName = destinationStationName,
+              let originStation = findStation(by: originName),
+              let destinationStation = findStation(by: destinationName) else {
+            return "Please specify a valid origin and destination, for example: 'next Powell BART to Colma'."
+        }
+
+        return await executeConnectingTrainQuery(origin: originStation, destination: destinationStation)
+    }
+
+    private func handleNextTrainQuery(query: String) async -> String {
+        let (originStationName, _) = extractStationNames(from: query)
+
+        guard let originName = originStationName,
+              let originStation = findStation(by: originName) else {
+            return "I couldn't understand the station name. Please try again."
+        }
+
+        let userSpecifiedDirection = extractDirection(from: query)
+        return await executeNextTrainQuery(station: originStation, direction: userSpecifiedDirection)
+    }
+
+    private func handleUnknownQuery() -> String {
+        return "I can help you find nearby BART stops or next train departures. Try asking 'nearby BART' or 'next Daly City BART going North'."
+    }
+
+    private func formatFilteredTrains(_ trains: [BartETD], queryDestinationName: String?) -> String {
+        var responseText = ""
+        let groupedEstimates = Dictionary(grouping: trains, by: { $0.destination })
+
+        for destination in groupedEstimates.keys.sorted(by: { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending}) {// alphabetic order
+            if let etdsForDestination = groupedEstimates[destination] {
+                responseText += "To \(destination):\n"
+                for etd in etdsForDestination {
+                    for estimate in etd.estimate {
+                        responseText += "  - \(estimate.minutes) min (Platform \(estimate.platform ?? "?"))\n"
+                    }
+                }
+            }
+        }
+
         return responseText
     }
     
@@ -191,14 +304,33 @@ class ChatbotViewModel: ObservableObject {
         return nil
     }
 
-    
-    
-    private func extractStationName(from query: String) -> String? {
+    private func extractStationNames(from query: String) -> (origin: String?, destination: String?) {
         let lowercasedQuery = query.lowercased()
+        var originPart = lowercasedQuery
+        var destinationPart: String?
 
-        if let nextRange = lowercasedQuery.range(of: "next "), let bartRange = lowercasedQuery.range(of: " bart") {
+        let separators = [" to ", " towards "]
+        for separator in separators {
+            if let range = lowercasedQuery.range(of: separator) {
+                originPart = String(lowercasedQuery[..<range.lowerBound])
+                destinationPart = String(lowercasedQuery[range.upperBound...])
+                break
+            }
+        }
+
+        let origin = findStationAlias(in: originPart)
+        var destination: String?
+        if let destPart = destinationPart {
+            destination = findStationAlias(in: destPart)
+        }
+
+        return (origin, destination)
+    }
+
+    private func findStationAlias(in text: String) -> String? {
+        if let nextRange = text.range(of: "next "), let bartRange = text.range(of: " bart") {
             if nextRange.upperBound < bartRange.lowerBound {
-                let stationName = String(lowercasedQuery[nextRange.upperBound..<bartRange.lowerBound]).trimmingCharacters(in: .whitespaces)
+                let stationName = String(text[nextRange.upperBound..<bartRange.lowerBound]).trimmingCharacters(in: .whitespaces)
                 for alias in self.sortedAliases {
                     if stationName == alias.lowercased() {
                         return alias
@@ -207,45 +339,11 @@ class ChatbotViewModel: ObservableObject {
             }
         }
 
-        var queryToSearch = lowercasedQuery
-        if let range = lowercasedQuery.range(of: " to ") {
-            queryToSearch = String(lowercasedQuery[..<range.lowerBound])
-        } else if let range = lowercasedQuery.range(of: " towards ") {
-            queryToSearch = String(lowercasedQuery[..<range.lowerBound])
-        }
-
         for alias in self.sortedAliases {
-            if queryToSearch.contains(alias.lowercased()) {
+            if text.contains(alias.lowercased()) {
                 return alias
             }
         }
-        
-        return nil
-    }
-    
-    private func extractDestinationStationName(from query: String) -> String? {
-        let lowercasedQuery = query.lowercased()
-        
-        if let range = lowercasedQuery.range(of: " to ") {
-            let potentialDestinationQuery = String(lowercasedQuery[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            for alias in self.sortedAliases {
-                if potentialDestinationQuery.contains(alias.lowercased()) {
-                    return alias
-                }
-            }
-        }
-        
-        if let range = lowercasedQuery.range(of: " towards ") {
-            let potentialDestinationQuery = String(lowercasedQuery[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            for alias in self.sortedAliases {
-                if potentialDestinationQuery.contains(alias.lowercased()) {
-                    return alias
-                }
-            }
-        }
-        
         return nil
     }
     
@@ -264,6 +362,13 @@ class ChatbotViewModel: ObservableObject {
             if let foundStop = bartManager.stops.first(where: { $0.bartAbbr?.lowercased() == bartAbbr.lowercased() }) {
                 return Station(abbr: foundStop.bartAbbr ?? "", name: foundStop.stop_name)
             }
+        }
+        return nil
+    }
+
+    private func findStation(byAbbr abbr: String) -> Station? {
+        if let foundStop = bartManager.stops.first(where: { $0.bartAbbr?.lowercased() == abbr.lowercased() }) {
+            return Station(abbr: foundStop.bartAbbr ?? "", name: foundStop.stop_name)
         }
         return nil
     }

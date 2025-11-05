@@ -1,7 +1,7 @@
 
 import SwiftUI
 import CoreLocation
-
+//
 struct ChatbotView: View {
     @StateObject var chatbotVM: ChatbotViewModel
     @State private var keyboardHeight: CGFloat = 0 // New state for keyboard height
@@ -16,45 +16,30 @@ struct ChatbotView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(chatbotVM.messages) { message in
-                            HStack {
-                                if message.isUser {
-                                    Spacer()
-                                }
-                                Text(message.content)
-                                    .padding(10)
-                                    .background(message.isUser ? Color.blue : Color.gray.opacity(0.2))
-                                    .foregroundColor(message.isUser ? .white : .primary)
-                                    .cornerRadius(10)
-                                if !message.isUser {
-                                    Spacer()
-                                }
-                            }
-                            .id(message.id) // Add an ID to each message for scrolling
+                            messageRow(message: message)
+                                .id(message.id)
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, keyboardHeight) // Add padding for keyboard
                 }
-                .onChange(of: chatbotVM.messages.count) { _ in
-                    scrollToBottom(scrollViewProxy: scrollViewProxy)
-                }
-                .onChange(of: keyboardHeight) { _ in
-                    scrollToBottom(scrollViewProxy: scrollViewProxy)
-                }
-                .onAppear {
-                    // Observe keyboard notifications
-                    NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
-                        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-                        keyboardHeight = keyboardFrame.height
-                        scrollToBottom(scrollViewProxy: scrollViewProxy)
+                .onChange(of: chatbotVM.messages.count) { newCount in
+                    guard newCount > 0 else { return }
+                    let lastMessage = chatbotVM.messages.last!
+
+                    if lastMessage.isUser {
+                        // User's own message was just sent, scroll to the bottom to show it.
+                        scrollTo(id: lastMessage.id, anchor: .bottom, proxy: scrollViewProxy)
+                    } else {
+                        // Bot has just responded. Scroll to the user's query (the message before the last one)
+                        // and anchor it to the top of the view.
+                        if chatbotVM.messages.count >= 2 {
+                            let userQueryMessageId = chatbotVM.messages[chatbotVM.messages.count - 2].id
+                            scrollTo(id: userQueryMessageId, anchor: .top, proxy: scrollViewProxy)
+                        } else {
+                            // Fallback for the unlikely case where the bot message is the first one.
+                            scrollTo(id: lastMessage.id, anchor: .bottom, proxy: scrollViewProxy)
+                        }
                     }
-                    NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-                        keyboardHeight = 0
-                        scrollToBottom(scrollViewProxy: scrollViewProxy)
-                    }
-                }
-                .onDisappear {
-                    NotificationCenter.default.removeObserver(self)
                 }
             }
             .onTapGesture {
@@ -68,9 +53,11 @@ struct ChatbotView: View {
                     .focused($isTextFieldFocused)
                     .ignoresSafeArea(.all)
                 Button{
-                    Task {
-                        await chatbotVM.processQuery(chatbotVM.query, userLocation: chatbotVM.userLocation)
-                        chatbotVM.query = ""
+                    if !chatbotVM.query.isEmpty{
+                        Task {
+                            await chatbotVM.processQuery(chatbotVM.query, userLocation: chatbotVM.userLocation)
+                            chatbotVM.query = ""
+                        }
                     }
                 } label: {
                     Text("Send")
@@ -96,13 +83,40 @@ struct ChatbotView: View {
             chatbotVM.userLocation = location
         }
     }
-    
-    private func scrollToBottom(scrollViewProxy: ScrollViewProxy) {
-        if let lastMessage = chatbotVM.messages.last {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { // Add a small delay
-                withAnimation {
-                    scrollViewProxy.scrollTo(lastMessage.id, anchor: .bottom)
+
+    @ViewBuilder
+    private func messageRow(message: Message) -> some View {
+        HStack {
+            if message.isUser {
+                Spacer()
+                HStack {
+                    Text(message.content)
+                    Button(action: {
+                        chatbotVM.toggleFavorite(query: message.content)
+                    }) {
+                        Image(systemName: chatbotVM.isFavorite(query: message.content) ? "star.fill" : "star")
+                            .foregroundColor(.yellow)
+                    }
                 }
+                .padding(10)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            } else {
+                Text(message.content)
+                    .padding(10)
+                    .background(Color.gray.opacity(0.2))
+                    .foregroundColor(.primary)
+                    .cornerRadius(10)
+                Spacer()
+            }
+        }
+    }
+    
+    private func scrollTo(id: UUID, anchor: UnitPoint, proxy: ScrollViewProxy) {
+        DispatchQueue.main.async {
+            withAnimation {
+                proxy.scrollTo(id, anchor: anchor)
             }
         }
     }

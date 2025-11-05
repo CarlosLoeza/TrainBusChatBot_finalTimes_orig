@@ -15,7 +15,7 @@ struct ContentView_ViewModelWrapper: View {
                         self.bartViewModel = BartViewModel(bartManager: bartManager)
                         let trainListViewModel = TrainListViewModel(bartManager: bartManager)
                         self.trainListViewModel = trainListViewModel
-                        await trainListViewModel.findAndPrintConnectingTrains()
+//                        await trainListViewModel.findAndPrintConnectingTrains()
                     }
                 }
         }

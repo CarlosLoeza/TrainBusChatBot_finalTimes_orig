@@ -10,20 +10,32 @@ import SwiftUI
 @main
 struct TrainBusChatBotApp: App {
     @StateObject private var bartManagerWrapper = BartManagerWrapper()
+    @State private var selectedTab = 0
 
     var body: some Scene {
         WindowGroup {
             if let bartManager = bartManagerWrapper.bartManager {
-                TabView {
+                let chatbotVM = ChatbotViewModel(bartManager: bartManager)
+                TabView(selection: $selectedTab) {
                     NearbyStopsView_ViewModelWrapper(bartManager: bartManager)
                         .tabItem {
-                            Label("Nearby Stops", systemImage: "location.fill")
+                            Label("Nearby", systemImage: "location.fill")
                         }
+                        .tag(0)
+                    
+                    FavoritesView(chatbotVM: chatbotVM, selectedTab: $selectedTab)
+                        .tabItem {
+                            Label("Favorites", systemImage: "star.fill")
+                        }
+                        .tag(1)
 
-                    ChatbotView(chatbotVM: ChatbotViewModel(bartManager: bartManager))
+                    ChatbotView(chatbotVM: chatbotVM)
                         .tabItem {
                             Label("Chatbot", systemImage: "message.fill")
                         }
+                        .tag(2)
+
+                    
                 }
                 .onAppear {
                     let appearance = UITabBarAppearance()
