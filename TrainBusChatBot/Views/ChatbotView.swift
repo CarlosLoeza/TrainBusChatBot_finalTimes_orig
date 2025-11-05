@@ -21,28 +21,25 @@ struct ChatbotView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, keyboardHeight) // Add padding for keyboard
                 }
-                .onChange(of: chatbotVM.messages.count) { _ in
-                    scrollToBottom(scrollViewProxy: scrollViewProxy)
-                }
-                .onChange(of: keyboardHeight) { _ in
-                    scrollToBottom(scrollViewProxy: scrollViewProxy)
-                }
-                .onAppear {
-                    // Observe keyboard notifications
-                    NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { notification in
-                        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-                        keyboardHeight = keyboardFrame.height
-                        scrollToBottom(scrollViewProxy: scrollViewProxy)
+                .onChange(of: chatbotVM.messages.count) { newCount in
+                    guard newCount > 0 else { return }
+                    let lastMessage = chatbotVM.messages.last!
+
+                    if lastMessage.isUser {
+                        // User's own message was just sent, scroll to the bottom to show it.
+                        scrollTo(id: lastMessage.id, anchor: .bottom, proxy: scrollViewProxy)
+                    } else {
+                        // Bot has just responded. Scroll to the user's query (the message before the last one)
+                        // and anchor it to the top of the view.
+                        if chatbotVM.messages.count >= 2 {
+                            let userQueryMessageId = chatbotVM.messages[chatbotVM.messages.count - 2].id
+                            scrollTo(id: userQueryMessageId, anchor: .top, proxy: scrollViewProxy)
+                        } else {
+                            // Fallback for the unlikely case where the bot message is the first one.
+                            scrollTo(id: lastMessage.id, anchor: .bottom, proxy: scrollViewProxy)
+                        }
                     }
-                    NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-                        keyboardHeight = 0
-                        scrollToBottom(scrollViewProxy: scrollViewProxy)
-                    }
-                }
-                .onDisappear {
-                    NotificationCenter.default.removeObserver(self)
                 }
             }
             .onTapGesture {
@@ -116,13 +113,10 @@ struct ChatbotView: View {
         }
     }
     
-    private func scrollToBottom(scrollViewProxy: ScrollViewProxy) {
-        guard !chatbotVM.messages.isEmpty else { return }
-        let lastMessageId = chatbotVM.messages.last!.id
-
+    private func scrollTo(id: UUID, anchor: UnitPoint, proxy: ScrollViewProxy) {
         DispatchQueue.main.async {
             withAnimation {
-                scrollViewProxy.scrollTo(lastMessageId, anchor: .bottom)
+                proxy.scrollTo(id, anchor: anchor)
             }
         }
     }
