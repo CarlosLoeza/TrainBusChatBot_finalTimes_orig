@@ -30,7 +30,9 @@ struct FavoritesView: View {
                                 Image(systemName: "star.fill")
                                     .foregroundColor(.yellow)
                             }
+                            .accessibilityIdentifier("unfavoriteButton_\(route.name)")
                         }
+                        .accessibilityIdentifier("routeFavoriteRow_\(route.name)")
                         .disabled(isProcessingTap) // Disable the row during processing
                     }
                     .onDelete(perform: deleteRoute)
@@ -59,11 +61,13 @@ struct FavoritesView: View {
                                     .foregroundColor(.yellow)
                             }
                         }
+                        .accessibilityIdentifier("stationFavoriteRow_\(station.name)")
                         .disabled(isProcessingTap) // Disable the row during processing
                     }
                     .onDelete(perform: deleteStation)
                 }
             }
+            .accessibilityIdentifier("favoritesList")
             .navigationTitle("Favorites")
             .toolbar {
                 EditButton()
@@ -79,3 +83,4 @@ struct FavoritesView: View {
         chatbotVM.removeStationFavorite(at: offsets)
     }
 }
+

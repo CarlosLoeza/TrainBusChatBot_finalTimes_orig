@@ -11,6 +11,12 @@ import SwiftUI
 struct TrainBusChatBotApp: App {
     @StateObject private var bartManagerWrapper = BartManagerWrapper()
     @State private var selectedTab = 0
+    
+    init() {
+        if ProcessInfo.processInfo.arguments.contains("--UITesting") {
+            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        }
+    }
 
     var body: some Scene {
         WindowGroup {

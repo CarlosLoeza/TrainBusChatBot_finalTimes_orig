@@ -1,41 +1,119 @@
-//
-//  TrainBusChatBotUITests.swift
-//  TrainBusChatBotUITests
-//
-//  Created by Carlos on 10/15/25.
-//
 
 import XCTest
 
 final class TrainBusChatBotUITests: XCTestCase {
 
+    var app: XCUIApplication!
+
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
+        try super.setUpWithError()
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        app = XCUIApplication()
+        app.launchArguments.append("--UITesting")
+        app.launch()
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        app = nil
+        try super.tearDownWithError()
     }
 
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
+    // --- TEST CASES ---
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testAddAndRemoveRoute_bySwiping() throws {
+        let query = "Next daly city bart to colma"
+        
+        // ARRANGE: Add a favorite route.
+        addFavorite(query: query, responseText: "Next trains from Daly City towards Colma")
+        
+        // ACT & ASSERT: Navigate to favorites, verify it exists, then delete by swiping.
+        app.tabBars.buttons["Favorites"].tap()
+        verifyFavoriteExists(query: query, type: "route", shouldExist: true)
+        
+        let favoriteRowText = app.collectionViews["favoritesList"].staticTexts["routeFavoriteRow_\(query)"]
+        favoriteRowText.swipeLeft()
+        app.buttons["Delete"].tap()
+        
+        // FINAL ASSERT: Verify it's gone.
+        verifyFavoriteExists(query: query, type: "route", shouldExist: false)
+    }
+    
+    func testAddAndRemoveStation_bySwiping() throws {
+        let query = "Next Daly City Bart"
+        
+        // ARRANGE: Add a favorite station.
+        addFavorite(query: query, responseText: "Next trains for Daly City")
+
+        // ACT & ASSERT: Navigate to favorites, verify it exists, then delete by swiping.
+        app.tabBars.buttons["Favorites"].tap()
+        verifyFavoriteExists(query: query, type: "station", shouldExist: true)
+
+        let favoriteRowText = app.collectionViews["favoritesList"].staticTexts["stationFavoriteRow_\(query)"]
+        favoriteRowText.swipeLeft()
+        app.buttons["Delete"].tap()
+
+        // FINAL ASSERT: Verify it's gone.
+        verifyFavoriteExists(query: query, type: "station", shouldExist: false)
+    }
+    
+    func testAddAndRemoveRoute_byTappingStar() throws {
+        let query = "Next daly city bart to colma"
+        
+        // ARRANGE: Add a favorite route.
+        addFavorite(query: query, responseText: "Next trains from Daly City towards Colma")
+
+        // ACT & ASSERT: Navigate to favorites, verify it exists, then delete by tapping the star.
+        app.tabBars.buttons["Favorites"].tap()
+        verifyFavoriteExists(query: query, type: "route", shouldExist: true)
+
+        // This is the different part: tap the star button on the favorites list to unfavorite.
+        app.buttons["routeFavoriteRow_\(query)"].tap()
+
+        // FINAL ASSERT: Verify it's gone.
+        verifyFavoriteExists(query: query, type: "route", shouldExist: false)
     }
 
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
+    // --- HELPER METHODS ---
+
+    /// Navigates to the chatbot, enters a query, and taps the favorite button.
+    private func addFavorite(query: String, responseText: String) {
+        // Start on a known tab and ensure favorites are empty.
+        app.tabBars.buttons["Favorites"].tap()
+        let favoriteTexts = app.collectionViews["favoritesList"].staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH 'routeFavoriteRow_' OR identifier BEGINSWITH 'stationFavoriteRow_'"))
+        XCTAssertEqual(favoriteTexts.count, 0, "Favorites list should be empty of favorites at the start.")
+
+        // Navigate to chatbot and perform query
+        app.tabBars.buttons["Chatbot"].tap()
+        
+        let textField = app.textFields["Ask about BART..."]
+        XCTAssertTrue(textField.waitForExistence(timeout: 5))
+        textField.tap()
+        textField.typeText(query)
+        app.buttons["Send"].tap()
+        
+        // Dismiss keyboard
+        app.staticTexts[query].tap()
+
+        // Wait for response
+        let responsePredicate = NSPredicate(format: "label BEGINSWITH %@", responseText)
+        let responseElement = app.staticTexts.containing(responsePredicate).firstMatch
+        XCTAssertTrue(responseElement.waitForExistence(timeout: 15), "Bot response did not appear in time.")
+
+        // Tap the favorite star in the chat
+        let favoriteButton = app.buttons["favoriteButton_\(query)"]
+        XCTAssertTrue(favoriteButton.waitForExistence(timeout: 5))
+        favoriteButton.tap()
+    }
+
+    /// Verifies if a favorite with a given query and type exists or not.
+    private func verifyFavoriteExists(query: String, type: String, shouldExist: Bool) {
+        let favoriteIdentifier = "\(type)FavoriteRow_\(query)"
+        let favoriteRowText = app.collectionViews["favoritesList"].staticTexts[favoriteIdentifier]
+        
+        if shouldExist {
+            XCTAssertTrue(favoriteRowText.waitForExistence(timeout: 5), "Favorite '\(query)' of type '\(type)' should exist.")
+        } else {
+            XCTAssertFalse(favoriteRowText.exists, "Favorite '\(query)' of type '\(type)' should NOT exist.")
         }
     }
 }

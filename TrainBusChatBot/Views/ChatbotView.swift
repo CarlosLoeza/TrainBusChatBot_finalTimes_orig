@@ -97,6 +97,7 @@ struct ChatbotView: View {
                         Image(systemName: chatbotVM.isFavorite(query: message.content) ? "star.fill" : "star")
                             .foregroundColor(.yellow)
                     }
+                    .accessibilityIdentifier("favoriteButton_\(message.content)")
                 }
                 .padding(10)
                 .background(Color.blue)
