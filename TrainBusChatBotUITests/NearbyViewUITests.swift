@@ -10,7 +10,6 @@ struct StationTestData {
 final class NearbyViewUITests: XCTestCase {
 
     var app: XCUIApplication!
-    
     // Define our list of stations to test
     let stationsToTest: [StationTestData] = [
         StationTestData(name: "Powell Street", location: CLLocation(latitude: 37.7840, longitude: -122.4078)),
@@ -18,11 +17,13 @@ final class NearbyViewUITests: XCTestCase {
         StationTestData(name: "Daly City", location: CLLocation(latitude: 37.706051, longitude: -122.468807)),
         StationTestData(name: "Montgomery Street", location: CLLocation(latitude: 37.7894, longitude: -122.4010))
     ]
-
+    
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false
         app = XCUIApplication()
+        app.launchArguments.append("--UITesting")
+        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -66,7 +67,7 @@ final class NearbyViewUITests: XCTestCase {
 
         // --- 3. ASSERT: Verify that the station appears in the list ---
         let nearbyList = app.collectionViews["nearbyStopsList"]
-        
+        print("test: \(nearbyList.debugDescription)")
         // Wait for the list itself to exist before trying to find elements within it.
         XCTAssertTrue(nearbyList.waitForExistence(timeout: 10), "The nearby stops list should appear for \(station.name).")
 

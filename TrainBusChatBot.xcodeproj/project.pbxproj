@@ -16,7 +16,7 @@
 		07DB136A2EA015CC00C6487E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB13692EA015CC00C6487E /* Assets.xcassets */; };
 		07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */; };
 		07DB13772EA015CC00C6487E /* TrainBusChatBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */; };
-		07DB13812EA015CC00C6487E /* TrainBusChatBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */; };
+		07DB13812EA015CC00C6487E /* ChatbotViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13802EA015CC00C6487E /* ChatbotViewUITests.swift */; };
 		07DB13832EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */; };
 		07DB14222EA025A800C6487E /* BartManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14212EA025A800C6487E /* BartManager.swift */; };
 		07DB14242EA025B800C6487E /* BartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14232EA025B800C6487E /* BartViewModel.swift */; };
@@ -83,7 +83,7 @@
 		07DB13722EA015CC00C6487E /* TrainBusChatBotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainBusChatBotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotTests.swift; sourceTree = "<group>"; };
 		07DB137C2EA015CC00C6487E /* TrainBusChatBotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainBusChatBotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotUITests.swift; sourceTree = "<group>"; };
+		07DB13802EA015CC00C6487E /* ChatbotViewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatbotViewUITests.swift; sourceTree = "<group>"; };
 		07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		07DB14212EA025A800C6487E /* BartManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartManager.swift; sourceTree = "<group>"; };
 		07DB14232EA025B800C6487E /* BartViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartViewModel.swift; sourceTree = "<group>"; };
@@ -242,7 +242,7 @@
 		07DB137F2EA015CC00C6487E /* TrainBusChatBotUITests */ = {
 			isa = PBXGroup;
 			children = (
-				07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */,
+				07DB13802EA015CC00C6487E /* ChatbotViewUITests.swift */,
 				076E7BBD2EBBEBC200254F78 /* NearbyViewUITests.swift */,
 				07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */,
 			);
@@ -472,7 +472,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07DB13832EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift in Sources */,
-				07DB13812EA015CC00C6487E /* TrainBusChatBotUITests.swift in Sources */,
+				07DB13812EA015CC00C6487E /* ChatbotViewUITests.swift in Sources */,
 				076E7BBE2EBBEBC200254F78 /* NearbyViewUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,7 +623,7 @@
 				DEVELOPMENT_TEAM = QC9K328B2W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Use location to find nearby stops";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to find nearby BART stations and provide relevant directions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -653,7 +653,7 @@
 				DEVELOPMENT_TEAM = QC9K328B2W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Use location to find nearby stops";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to find nearby BART stations and provide relevant directions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

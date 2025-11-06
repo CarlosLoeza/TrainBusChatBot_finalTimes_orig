@@ -4,6 +4,9 @@ import XCTest
 final class ChatbotViewUITests: XCTestCase {
 
     var app: XCUIApplication!
+    let nextBartToDestinationQuery = "Next daly city bart to colma"
+    let nextBartAtStationQuery = "Next Daly City Bart"
+    
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -21,56 +24,55 @@ final class ChatbotViewUITests: XCTestCase {
     // --- TEST CASES ---
 
     func testAddAndRemoveRoute_bySwiping() throws {
-        let query = "Next daly city bart to colma"
+        
         
         // ARRANGE: Add a favorite route.
-        addFavorite(query: query, responseText: "Next trains from Daly City towards Colma")
+        addFavorite(query: nextBartToDestinationQuery, responseText: "Next trains from Daly City towards Colma")
         
         // ACT & ASSERT: Navigate to favorites, verify it exists, then delete by swiping.
         app.tabBars.buttons["Favorites"].tap()
-        verifyFavoriteExists(query: query, type: "route", shouldExist: true)
+        verifyFavoriteExists(query: nextBartToDestinationQuery, type: "route", shouldExist: true)
         
-        let favoriteRowText = app.collectionViews["favoritesList"].staticTexts["routeFavoriteRow_\(query)"]
+        let favoriteRowText = app.collectionViews["favoritesList"].staticTexts["routeFavoriteRow_\(nextBartToDestinationQuery)"]
         favoriteRowText.swipeLeft()
         app.buttons["Delete"].tap()
         
         // FINAL ASSERT: Verify it's gone.
-        verifyFavoriteExists(query: query, type: "route", shouldExist: false)
+        verifyFavoriteExists(query: nextBartToDestinationQuery, type: "route", shouldExist: false)
     }
     
     func testAddAndRemoveStation_bySwiping() throws {
-        let query = "Next Daly City Bart"
         
         // ARRANGE: Add a favorite station.
-        addFavorite(query: query, responseText: "Next trains for Daly City")
+        addFavorite(query: nextBartAtStationQuery, responseText: "Next trains for Daly City")
 
         // ACT & ASSERT: Navigate to favorites, verify it exists, then delete by swiping.
         app.tabBars.buttons["Favorites"].tap()
-        verifyFavoriteExists(query: query, type: "station", shouldExist: true)
+        verifyFavoriteExists(query: nextBartAtStationQuery, type: "station", shouldExist: true)
 
-        let favoriteRowText = app.collectionViews["favoritesList"].staticTexts["stationFavoriteRow_\(query)"]
+        let favoriteRowText = app.collectionViews["favoritesList"].staticTexts["stationFavoriteRow_\(nextBartAtStationQuery)"]
         favoriteRowText.swipeLeft()
         app.buttons["Delete"].tap()
 
         // FINAL ASSERT: Verify it's gone.
-        verifyFavoriteExists(query: query, type: "station", shouldExist: false)
+        verifyFavoriteExists(query: nextBartAtStationQuery, type: "station", shouldExist: false)
     }
     
     func testAddAndRemoveRoute_byTappingStar() throws {
-        let query = "Next daly city bart to colma"
+
         
         // ARRANGE: Add a favorite route.
-        addFavorite(query: query, responseText: "Next trains from Daly City towards Colma")
+        addFavorite(query: nextBartToDestinationQuery, responseText: "Next trains from Daly City towards Colma")
 
         // ACT & ASSERT: Navigate to favorites, verify it exists, then delete by tapping the star.
         app.tabBars.buttons["Favorites"].tap()
-        verifyFavoriteExists(query: query, type: "route", shouldExist: true)
+        verifyFavoriteExists(query: nextBartToDestinationQuery, type: "route", shouldExist: true)
 
         // This is the different part: tap the star button on the favorites list to unfavorite.
-        app.buttons["routeFavoriteRow_\(query)"].tap()
+        app.buttons["routeFavoriteRow_\(nextBartToDestinationQuery)"].tap()
 
         // FINAL ASSERT: Verify it's gone.
-        verifyFavoriteExists(query: query, type: "route", shouldExist: false)
+        verifyFavoriteExists(query: nextBartToDestinationQuery, type: "route", shouldExist: false)
     }
 
     // --- HELPER METHODS ---
@@ -79,7 +81,8 @@ final class ChatbotViewUITests: XCTestCase {
     private func addFavorite(query: String, responseText: String) {
         // Start on a known tab and ensure favorites are empty.
         app.tabBars.buttons["Favorites"].tap()
-        let favoriteTexts = app.collectionViews["favoritesList"].staticTexts.matching(NSPredicate(format: "identifier BEGINSWITH 'routeFavoriteRow_' OR identifier BEGINSWITH 'stationFavoriteRow_'"))
+        let responseIdentifierPredicate = NSPredicate(format: "identifier BEGINSWITH 'routeFavoriteRow_' OR identifier BEGINSWITH 'stationFavoriteRow_'")
+        let favoriteTexts = app.collectionViews["favoritesList"].staticTexts.matching(responseIdentifierPredicate)
         XCTAssertEqual(favoriteTexts.count, 0, "Favorites list should be empty of favorites at the start.")
 
         // Navigate to chatbot and perform query
@@ -95,8 +98,8 @@ final class ChatbotViewUITests: XCTestCase {
         app.staticTexts[query].tap()
 
         // Wait for response
-        let responsePredicate = NSPredicate(format: "label BEGINSWITH %@", responseText)
-        let responseElement = app.staticTexts.containing(responsePredicate).firstMatch
+        let responseLabelPredicate = NSPredicate(format: "label BEGINSWITH %@", responseText)
+        let responseElement = app.staticTexts.containing(responseLabelPredicate).firstMatch
         XCTAssertTrue(responseElement.waitForExistence(timeout: 15), "Bot response did not appear in time.")
 
         // Tap the favorite star in the chat
