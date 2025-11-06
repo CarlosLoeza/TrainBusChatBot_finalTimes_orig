@@ -88,19 +88,15 @@ final class ChatbotViewUITests: XCTestCase {
         // Navigate to chatbot and perform query
         app.tabBars.buttons["Chatbot"].tap()
         
-        let textField = app.textFields["Ask about BART..."]
-        XCTAssertTrue(textField.waitForExistence(timeout: 5))
-        textField.tap()
-        textField.typeText(query)
-        app.buttons["Send"].tap()
+        let chatbotScreen = ChatbotScreen(app: app)
+        XCTAssertTrue(chatbotScreen.messageInput.waitForExistence(timeout: 5))
+        chatbotScreen.sendMessage(query)
         
-        // Dismiss keyboard
+        // Dismiss keyboard (this interaction is still outside the ChatbotScreen's direct responsibility)
         app.staticTexts[query].tap()
 
         // Wait for response
-        let responseLabelPredicate = NSPredicate(format: "label BEGINSWITH %@", responseText)
-        let responseElement = app.staticTexts.containing(responseLabelPredicate).firstMatch
-        XCTAssertTrue(responseElement.waitForExistence(timeout: 15), "Bot response did not appear in time.")
+        XCTAssertTrue(chatbotScreen.waitForBotResponse(containing: responseText, timeout: 15), "Bot response did not appear in time.")
 
         // Tap the favorite star in the chat
         let favoriteButton = app.buttons["favoriteButton_\(query)"]
