@@ -60,6 +60,7 @@ final class NearbyViewUITests: XCTestCase {
         app.launch()
 
         // --- 2. ACT: Navigate to the Nearby tab and trigger location request ---
+        let mainTabBar = MainTabBar(app: app)
         app.tabBars.buttons["Nearby"].tap()
         
         // Tap the button to trigger the location request and load nearby stops.

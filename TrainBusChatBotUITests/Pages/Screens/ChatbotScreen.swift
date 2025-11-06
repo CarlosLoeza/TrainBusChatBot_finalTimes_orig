@@ -41,4 +41,10 @@ struct ChatbotScreen {
     func waitForBotResponse(containing text: String, timeout: TimeInterval = 10) -> Bool {
         return app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", text)).firstMatch.waitForExistence(timeout: timeout)
     }
+
+    func tapFavoriteButton(forQuery query: String) {
+        let favoriteButton = app.buttons["favoriteButton_\(query)"]
+        XCTAssertTrue(favoriteButton.waitForExistence(timeout: 5), "Favorite button for query '\(query)' did not appear.")
+        favoriteButton.tap()
+    }
 }
