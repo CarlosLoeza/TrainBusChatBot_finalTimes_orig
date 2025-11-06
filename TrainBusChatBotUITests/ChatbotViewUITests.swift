@@ -1,7 +1,7 @@
 
 import XCTest
 
-final class TrainBusChatBotUITests: XCTestCase {
+final class ChatbotViewUITests: XCTestCase {
 
     var app: XCUIApplication!
 
