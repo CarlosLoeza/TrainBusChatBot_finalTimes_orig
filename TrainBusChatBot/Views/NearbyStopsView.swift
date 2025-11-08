@@ -18,6 +18,7 @@ struct NearbyStopsView: View {
                 Button("Find Nearby BART Stops") {
                     locationManager.requestLocation()
                 }
+                .accessibilityIdentifier("nearbyStopButton")
                 
                 if bartViewModel.isLoadingStops {
                     ProgressView("Finding nearby stops...")
@@ -42,7 +43,7 @@ struct NearbyStopsView: View {
                             }
                             .accessibilityIdentifier("nearbyStopRow_\(stop.stop_name)")
                         }
-                        .accessibilityIdentifier("nearbyStopsList")
+                        .accessibilityIdentifier("nearbyStationList")
                     }
                 } else {
                     Text("Tap 'Find Nearby BART Stops' to get your location.")
