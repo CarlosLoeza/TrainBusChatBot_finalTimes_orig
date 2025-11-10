@@ -66,4 +66,9 @@ struct MainTabBar {
         trainListTabButton.tap()
         return TrainListScreen(app: app)
     }
+    
+    func verifyTabExists(tabIdentifier: String){
+        let tab = app.buttons[tabIdentifier]
+        XCTAssert(tab.waitForExistence(timeout: 3), "\(tabIdentifier) does NOT exist")
+    }
 }

@@ -20,6 +20,9 @@ struct FavoritesScreen {
     /// Assumes an accessibilityIdentifier of "favoritesList" in the app.
     var favoritesList: XCUIElement { app.collectionViews["favoritesList"] }
 
+    /// The first cell in the favorites list.
+    private var firstFavoriteCell: XCUIElement { favoritesList.cells.firstMatch }
+
     // MARK: - Actions
 
     /// Deletes a favorite item by swiping left on its row and tapping the "Delete" button.
@@ -32,6 +35,22 @@ struct FavoritesScreen {
         let favoriteIdentifier = "\(type)FavoriteRow_\(query)"
         let favoriteRowText = favoritesList.staticTexts[favoriteIdentifier]
         favoriteRowText.swipeLeft()
+        app.buttons["Delete"].tap()
+        return self
+    }
+
+    /// Deletes the first favorite item in the list by swiping.
+    /// This is a helper for clearing state, not for specific test actions.
+    /// - Returns: The current FavoritesScreen instance for chaining.
+    @discardableResult
+    func deleteFirstFavoriteBySwiping() -> FavoritesScreen {
+        // Swipe the first text element within the cell, which is more reliable.
+        let firstTextInCell = firstFavoriteCell.staticTexts.firstMatch
+        firstTextInCell.swipeLeft()
+        
+        // DEBUG: Print the UI hierarchy to see what buttons are visible after swipe
+        print(app.debugDescription)
+        
         app.buttons["Delete"].tap()
         return self
     }
