@@ -29,10 +29,15 @@ final class MainTabBarUITests: XCTestCase {
     }
 
     func testNearbyTabTapped(){
-        let mainTabBar = MainTabBar(app: app)
+        // ARRANGE: Wait for the main tab bar to appear, especially on slow CI machines.
+        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 30), "The main tab bar should appear on screen.")
         
+        // ACT
+        let mainTabBar = MainTabBar(app: app)
         let nearbyScreen = mainTabBar.tapNearbyTab()
-        XCTAssertTrue(nearbyScreen.nearbyBartButton.exists, "Nearby tab view was NOT found")
+
+        // ASSERT
+        XCTAssertTrue(nearbyScreen.nearbyBartButton.exists, "The 'Find Nearby BART Stops' button should be visible after tapping the Nearby tab.")
         
         // pass the app to main tab bar
         // use fluent

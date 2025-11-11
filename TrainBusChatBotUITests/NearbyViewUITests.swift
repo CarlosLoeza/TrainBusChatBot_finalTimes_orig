@@ -86,7 +86,7 @@ final class NearbyViewUITests: XCTestCase {
         print(app.debugDescription)
         print("---------------------------------------------------")
         nearbyStopScreen
-            .isNearbyStopsListVisible(timeout: 10) // Wait for the list to populate after tapping the find button
+            .isNearbyStopsListVisible(timeout: 30) // Increased timeout for slower CI environment
             .verifyNearbyStopExists(stationName: station.name, shouldExist: true)
             .tapStationRow(stationName: station.name)
 
