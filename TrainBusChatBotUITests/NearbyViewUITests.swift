@@ -34,6 +34,17 @@ final class NearbyViewUITests: XCTestCase {
         app = XCUIApplication()
         // Add launch arguments to configure the app for UI testing (e.g., mocking data).
         app.launchArguments.append("--UITesting")
+
+        // Add a monitor to automatically handle the location permission alert.
+        // This is crucial for running tests on clean CI machines.
+        addUIInterruptionMonitor(withDescription: "Location Permissions") { (alert) -> Bool in
+            if alert.buttons["Allow While Using App"].exists {
+                alert.buttons["Allow While Using App"].tap()
+                return true // We handled the alert.
+            }
+            return false // We did not handle this alert.
+        }
+        
         // Launch the application.
         app.launch() // Launch the app at the beginning of each test
     }
