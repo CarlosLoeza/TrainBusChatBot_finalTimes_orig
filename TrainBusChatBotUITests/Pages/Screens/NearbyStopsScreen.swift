@@ -59,7 +59,7 @@ struct NearbyStopsScreen {
         let nearbyStopRow = nearbyStationList.buttons[stationNameIdentifier]
         
         if shouldExist{
-            XCTAssertTrue(nearbyStopRow.waitForExistence(timeout: 10), "\(stationName) should appear in the nearby stops list.")
+            XCTAssertTrue(nearbyStopRow.waitForExistence(timeout: 5), "\(stationName) should appear in the nearby stops list.")
         } else {
             XCTAssertFalse(nearbyStopRow.exists, "Nearby stop \(stationName) should NOT exist")
         }

@@ -27,7 +27,7 @@ struct TrainListScreen {
     /// - Parameter timeout: The maximum time to wait for the list to appear.
     /// - Returns: The current TrainListScreen instance for chaining.
     @discardableResult
-    func isTrainListVisible(timeout: TimeInterval = 10) -> TrainListScreen {
+    func isTrainListVisible(timeout: TimeInterval = 5) -> TrainListScreen {
         XCTAssertTrue(trainList.waitForExistence(timeout: timeout), "Train list should be visible.")
         return self
     }
