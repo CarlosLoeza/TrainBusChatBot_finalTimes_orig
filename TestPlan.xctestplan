@@ -18,6 +18,13 @@
         "identifier" : "07DB137B2EA015CC00C6487E",
         "name" : "TrainBusChatBotUITests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:TrainBusChatBot.xcodeproj",
+        "identifier" : "07DB13712EA015CC00C6487E",
+        "name" : "TrainBusChatBotTests"
+      }
     }
   ],
   "version" : 1

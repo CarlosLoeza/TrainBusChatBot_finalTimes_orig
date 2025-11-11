@@ -48,9 +48,6 @@ struct FavoritesScreen {
         let firstTextInCell = firstFavoriteCell.staticTexts.firstMatch
         firstTextInCell.swipeLeft()
         
-        // DEBUG: Print the UI hierarchy to see what buttons are visible after swipe
-        print(app.debugDescription)
-        
         app.buttons["Delete"].tap()
         return self
     }

@@ -19,6 +19,7 @@
 		076E7BC82EBD55E400254F78 /* TrainListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BC72EBD55E400254F78 /* TrainListScreen.swift */; };
 		076E7BCD2EBFD73500254F78 /* MainTabBarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BCC2EBFD73500254F78 /* MainTabBarUITests.swift */; };
 		076E7BCF2EC2792F00254F78 /* BaseXCUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BCE2EC2792F00254F78 /* BaseXCUITestCase.swift */; };
+		076E7BD22EC2C01700254F78 /* ChatbotViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BD12EC2C01700254F78 /* ChatbotViewModelTests.swift */; };
 		07DB13662EA015CB00C6487E /* TrainBusChatBotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */; };
 		07DB136A2EA015CC00C6487E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB13692EA015CC00C6487E /* Assets.xcassets */; };
 		07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */; };
@@ -91,6 +92,7 @@
 		076E7BCC2EBFD73500254F78 /* MainTabBarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarUITests.swift; sourceTree = "<group>"; };
 		076E7BCE2EC2792F00254F78 /* BaseXCUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseXCUITestCase.swift; sourceTree = "<group>"; };
 		076E7BD02EC298AA00254F78 /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
+		076E7BD12EC2C01700254F78 /* ChatbotViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatbotViewModelTests.swift; sourceTree = "<group>"; };
 		07DB13622EA015CB00C6487E /* TrainBusChatBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainBusChatBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotApp.swift; sourceTree = "<group>"; };
 		07DB13692EA015CC00C6487E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 		07DB13752EA015CC00C6487E /* TrainBusChatBotTests */ = {
 			isa = PBXGroup;
 			children = (
+				076E7BD12EC2C01700254F78 /* ChatbotViewModelTests.swift */,
 				07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */,
 			);
 			path = TrainBusChatBotTests;
@@ -510,6 +513,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				076E7BD22EC2C01700254F78 /* ChatbotViewModelTests.swift in Sources */,
 				07DB13772EA015CC00C6487E /* TrainBusChatBotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
