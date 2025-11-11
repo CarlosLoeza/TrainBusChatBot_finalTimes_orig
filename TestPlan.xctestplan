@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "3B981860-0061-43E8-9814-A16E6B89823B",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:TrainBusChatBot.xcodeproj",
+        "identifier" : "07DB137B2EA015CC00C6487E",
+        "name" : "TrainBusChatBotUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:TrainBusChatBot.xcodeproj",
+        "identifier" : "07DB13712EA015CC00C6487E",
+        "name" : "TrainBusChatBotTests"
+      }
+    }
+  ],
+  "version" : 1
+}

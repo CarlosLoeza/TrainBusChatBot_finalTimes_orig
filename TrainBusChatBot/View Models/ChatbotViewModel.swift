@@ -158,7 +158,7 @@ class ChatbotViewModel: ObservableObject {
         isLoadingResponse = false
     }
 
-    private func executeConnectingTrainQuery(origin originStation: Station, destination destinationStation: Station) async -> String {
+    func executeConnectingTrainQuery(origin originStation: Station, destination destinationStation: Station) async -> String {
         let connectingTrips = await bartManager.findTripsPassingThrough(originStationName: originStation.name, destinationStationName: destinationStation.name)
         
         if connectingTrips.isEmpty {
@@ -189,7 +189,7 @@ class ChatbotViewModel: ObservableObject {
         }
     }
 
-    private func executeNextTrainQuery(station: Station, direction: String) async -> String {
+    func executeNextTrainQuery(station: Station, direction: String) async -> String {
         self.trainListViewModel.direction = direction
         
         await trainListViewModel.fetchETD(for: station)

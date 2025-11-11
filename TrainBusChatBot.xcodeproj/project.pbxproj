@@ -11,11 +11,20 @@
 		076E7B682EB9595200254F78 /* BartNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B672EB9595200254F78 /* BartNetworkManager.swift */; };
 		076E7B6A2EB971CA00254F78 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B692EB971CA00254F78 /* FavoritesView.swift */; };
 		076E7B6C2EB9722D00254F78 /* FavoriteRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B6B2EB9722D00254F78 /* FavoriteRoute.swift */; };
+		076E7BBE2EBBEBC200254F78 /* NearbyViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BBD2EBBEBC200254F78 /* NearbyViewUITests.swift */; };
+		076E7BC02EBC98EE00254F78 /* ChatbotScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BBF2EBC98EE00254F78 /* ChatbotScreen.swift */; };
+		076E7BC32EBD533600254F78 /* FavoritesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BC12EBD533600254F78 /* FavoritesScreen.swift */; };
+		076E7BC42EBD533600254F78 /* MainTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BC22EBD533600254F78 /* MainTabBar.swift */; };
+		076E7BC62EBD55C300254F78 /* NearbyStopsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BC52EBD55C300254F78 /* NearbyStopsScreen.swift */; };
+		076E7BC82EBD55E400254F78 /* TrainListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BC72EBD55E400254F78 /* TrainListScreen.swift */; };
+		076E7BCD2EBFD73500254F78 /* MainTabBarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BCC2EBFD73500254F78 /* MainTabBarUITests.swift */; };
+		076E7BCF2EC2792F00254F78 /* BaseXCUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BCE2EC2792F00254F78 /* BaseXCUITestCase.swift */; };
+		076E7BD22EC2C01700254F78 /* ChatbotViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7BD12EC2C01700254F78 /* ChatbotViewModelTests.swift */; };
 		07DB13662EA015CB00C6487E /* TrainBusChatBotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */; };
 		07DB136A2EA015CC00C6487E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB13692EA015CC00C6487E /* Assets.xcassets */; };
 		07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB136C2EA015CC00C6487E /* Preview Assets.xcassets */; };
 		07DB13772EA015CC00C6487E /* TrainBusChatBotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */; };
-		07DB13812EA015CC00C6487E /* TrainBusChatBotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */; };
+		07DB13812EA015CC00C6487E /* ChatbotViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13802EA015CC00C6487E /* ChatbotViewUITests.swift */; };
 		07DB13832EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */; };
 		07DB14222EA025A800C6487E /* BartManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14212EA025A800C6487E /* BartManager.swift */; };
 		07DB14242EA025B800C6487E /* BartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DB14232EA025B800C6487E /* BartViewModel.swift */; };
@@ -73,6 +82,17 @@
 		076E7B672EB9595200254F78 /* BartNetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartNetworkManager.swift; sourceTree = "<group>"; };
 		076E7B692EB971CA00254F78 /* FavoritesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
 		076E7B6B2EB9722D00254F78 /* FavoriteRoute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteRoute.swift; sourceTree = "<group>"; };
+		076E7BB52EBB2DDA00254F78 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		076E7BBD2EBBEBC200254F78 /* NearbyViewUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyViewUITests.swift; sourceTree = "<group>"; };
+		076E7BBF2EBC98EE00254F78 /* ChatbotScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatbotScreen.swift; sourceTree = "<group>"; };
+		076E7BC12EBD533600254F78 /* FavoritesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesScreen.swift; sourceTree = "<group>"; };
+		076E7BC22EBD533600254F78 /* MainTabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBar.swift; sourceTree = "<group>"; };
+		076E7BC52EBD55C300254F78 /* NearbyStopsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearbyStopsScreen.swift; sourceTree = "<group>"; };
+		076E7BC72EBD55E400254F78 /* TrainListScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrainListScreen.swift; sourceTree = "<group>"; };
+		076E7BCC2EBFD73500254F78 /* MainTabBarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarUITests.swift; sourceTree = "<group>"; };
+		076E7BCE2EC2792F00254F78 /* BaseXCUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseXCUITestCase.swift; sourceTree = "<group>"; };
+		076E7BD02EC298AA00254F78 /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
+		076E7BD12EC2C01700254F78 /* ChatbotViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatbotViewModelTests.swift; sourceTree = "<group>"; };
 		07DB13622EA015CB00C6487E /* TrainBusChatBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainBusChatBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotApp.swift; sourceTree = "<group>"; };
 		07DB13692EA015CC00C6487E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -80,7 +100,7 @@
 		07DB13722EA015CC00C6487E /* TrainBusChatBotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainBusChatBotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotTests.swift; sourceTree = "<group>"; };
 		07DB137C2EA015CC00C6487E /* TrainBusChatBotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrainBusChatBotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotUITests.swift; sourceTree = "<group>"; };
+		07DB13802EA015CC00C6487E /* ChatbotViewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatbotViewUITests.swift; sourceTree = "<group>"; };
 		07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		07DB14212EA025A800C6487E /* BartManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartManager.swift; sourceTree = "<group>"; };
 		07DB14232EA025B800C6487E /* BartViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartViewModel.swift; sourceTree = "<group>"; };
@@ -179,9 +199,38 @@
 			path = Network;
 			sourceTree = "<group>";
 		};
+		076E7BC92EBD563B00254F78 /* Pages */ = {
+			isa = PBXGroup;
+			children = (
+				076E7BCB2EBD564D00254F78 /* Components */,
+				076E7BCA2EBD564100254F78 /* Screens */,
+			);
+			path = Pages;
+			sourceTree = "<group>";
+		};
+		076E7BCA2EBD564100254F78 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				076E7BBF2EBC98EE00254F78 /* ChatbotScreen.swift */,
+				076E7BC12EBD533600254F78 /* FavoritesScreen.swift */,
+				076E7BC52EBD55C300254F78 /* NearbyStopsScreen.swift */,
+				076E7BC72EBD55E400254F78 /* TrainListScreen.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		076E7BCB2EBD564D00254F78 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				076E7BC22EBD533600254F78 /* MainTabBar.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		07DB13592EA015CB00C6487E = {
 			isa = PBXGroup;
 			children = (
+				076E7BD02EC298AA00254F78 /* TestPlan.xctestplan */,
 				07DB13642EA015CB00C6487E /* TrainBusChatBot */,
 				07DB13752EA015CC00C6487E /* TrainBusChatBotTests */,
 				07DB137F2EA015CC00C6487E /* TrainBusChatBotUITests */,
@@ -211,6 +260,7 @@
 				07DB145F2EA0512900C6487E /* BartManagerWrapper.swift */,
 				07DB14652EA051A200C6487E /* NearbyStopsView_ViewModelWrapper.swift */,
 				07DB14502EA03B6000C6487E /* ContentView_ViewModelWrapper.swift */,
+				076E7BB52EBB2DDA00254F78 /* Secrets.xcconfig */,
 				07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */,
 				07DB146B2EA3017C00C6487E /* LaunchScreen.storyboard */,
 				07DB13692EA015CC00C6487E /* Assets.xcassets */,
@@ -230,6 +280,7 @@
 		07DB13752EA015CC00C6487E /* TrainBusChatBotTests */ = {
 			isa = PBXGroup;
 			children = (
+				076E7BD12EC2C01700254F78 /* ChatbotViewModelTests.swift */,
 				07DB13762EA015CC00C6487E /* TrainBusChatBotTests.swift */,
 			);
 			path = TrainBusChatBotTests;
@@ -238,7 +289,11 @@
 		07DB137F2EA015CC00C6487E /* TrainBusChatBotUITests */ = {
 			isa = PBXGroup;
 			children = (
-				07DB13802EA015CC00C6487E /* TrainBusChatBotUITests.swift */,
+				076E7BC92EBD563B00254F78 /* Pages */,
+				076E7BCE2EC2792F00254F78 /* BaseXCUITestCase.swift */,
+				07DB13802EA015CC00C6487E /* ChatbotViewUITests.swift */,
+				076E7BCC2EBFD73500254F78 /* MainTabBarUITests.swift */,
+				076E7BBD2EBBEBC200254F78 /* NearbyViewUITests.swift */,
 				07DB13822EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift */,
 			);
 			path = TrainBusChatBotUITests;
@@ -458,6 +513,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				076E7BD22EC2C01700254F78 /* ChatbotViewModelTests.swift in Sources */,
 				07DB13772EA015CC00C6487E /* TrainBusChatBotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -466,8 +522,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				076E7BC42EBD533600254F78 /* MainTabBar.swift in Sources */,
+				076E7BCF2EC2792F00254F78 /* BaseXCUITestCase.swift in Sources */,
 				07DB13832EA015CC00C6487E /* TrainBusChatBotUITestsLaunchTests.swift in Sources */,
-				07DB13812EA015CC00C6487E /* TrainBusChatBotUITests.swift in Sources */,
+				076E7BC82EBD55E400254F78 /* TrainListScreen.swift in Sources */,
+				07DB13812EA015CC00C6487E /* ChatbotViewUITests.swift in Sources */,
+				076E7BCD2EBFD73500254F78 /* MainTabBarUITests.swift in Sources */,
+				076E7BC32EBD533600254F78 /* FavoritesScreen.swift in Sources */,
+				076E7BBE2EBBEBC200254F78 /* NearbyViewUITests.swift in Sources */,
+				076E7BC62EBD55C300254F78 /* NearbyStopsScreen.swift in Sources */,
+				076E7BC02EBC98EE00254F78 /* ChatbotScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,7 +681,7 @@
 				DEVELOPMENT_TEAM = QC9K328B2W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Use location to find nearby stops";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to find nearby BART stations and provide relevant directions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -647,7 +711,7 @@
 				DEVELOPMENT_TEAM = QC9K328B2W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Use location to find nearby stops";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to find nearby BART stations and provide relevant directions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

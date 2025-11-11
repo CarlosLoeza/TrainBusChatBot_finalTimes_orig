@@ -52,6 +52,7 @@ struct ChatbotView: View {
                     .cornerRadius(13.0)
                     .focused($isTextFieldFocused)
                     .ignoresSafeArea(.all)
+                    .accessibilityIdentifier("messageInput")
                 Button{
                     if !chatbotVM.query.isEmpty{
                         Task {
@@ -66,6 +67,7 @@ struct ChatbotView: View {
                         .cornerRadius(13.0)
                        
                 }
+                .accessibilityIdentifier("sendButton")
                 if chatbotVM.isLoadingResponse {
                     ProgressView()
                         .padding(.trailing)
@@ -97,6 +99,7 @@ struct ChatbotView: View {
                         Image(systemName: chatbotVM.isFavorite(query: message.content) ? "star.fill" : "star")
                             .foregroundColor(.yellow)
                     }
+                    .accessibilityIdentifier("favoriteButton_\(message.content)")
                 }
                 .padding(10)
                 .background(Color.blue)
