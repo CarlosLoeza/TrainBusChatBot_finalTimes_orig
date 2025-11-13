@@ -97,6 +97,7 @@
 		076E7BCE2EC2792F00254F78 /* BaseXCUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseXCUITestCase.swift; sourceTree = "<group>"; };
 		076E7BD02EC298AA00254F78 /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
 		076E7BD12EC2C01700254F78 /* ChatbotViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatbotViewModelTests.swift; sourceTree = "<group>"; };
+		076E7BD72EC595C500254F78 /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
 		07DB13622EA015CB00C6487E /* TrainBusChatBot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrainBusChatBot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainBusChatBotApp.swift; sourceTree = "<group>"; };
 		07DB13692EA015CC00C6487E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -234,6 +235,7 @@
 		07DB13592EA015CB00C6487E = {
 			isa = PBXGroup;
 			children = (
+				076E7BD72EC595C500254F78 /* Test.xcconfig */,
 				076E7BD02EC298AA00254F78 /* TestPlan.xctestplan */,
 				07DB13642EA015CB00C6487E /* TrainBusChatBot */,
 				07DB13752EA015CC00C6487E /* TrainBusChatBotTests */,
@@ -561,6 +563,7 @@
 /* Begin XCBuildConfiguration section */
 		07DB13842EA015CC00C6487E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 076E7BD72EC595C500254F78 /* Test.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

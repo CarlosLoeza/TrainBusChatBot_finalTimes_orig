@@ -1,0 +1,7 @@
+// This configuration file is used to override build settings for testing.
+
+// Leave the signing identity blank
+CODE_SIGN_IDENTITY =
+
+// Explicitly disable the requirement to code sign
+CODE_SIGNING_REQUIRED = NO
