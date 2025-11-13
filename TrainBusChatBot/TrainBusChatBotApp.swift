@@ -52,6 +52,9 @@ struct TrainBusChatBotApp: App {
                 }
             } else {
                 ProgressView("Loading BART data...")
+                    .task {
+                        await bartManagerWrapper.loadInitialData()
+                    }
             }
         }
     }

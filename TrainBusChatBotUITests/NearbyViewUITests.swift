@@ -46,7 +46,11 @@ final class NearbyViewUITests: XCTestCase {
         }
         
         // Launch the application.
-        app.launch() // Launch the app at the beginning of each test
+        app.launch()
+        
+        // Add a tap to handle system alerts like location permissions.
+        // This is often needed on CI to trigger the interruption monitor.
+        app.tap()
     }
 
     override func tearDownWithError() throws {

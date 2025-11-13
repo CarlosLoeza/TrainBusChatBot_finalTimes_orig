@@ -164,9 +164,14 @@ class BartManager {
         "West Oakland": "woak"
     ]
     
-    // Main initializer for actual app use
-    init() async {
+    // Main initializer for actual app use. It's now lightweight.
+    init() {
         print("BartManager init")
+        // Data is no longer loaded here. It will be loaded via the loadData() method.
+    }
+
+    // Asynchronous method to load all necessary GTFS data.
+    public func loadData() async {
         await loadGTFSData()
     }
     
