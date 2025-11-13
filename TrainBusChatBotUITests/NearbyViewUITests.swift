@@ -107,6 +107,9 @@ final class NearbyViewUITests: XCTestCase {
             .isNearbyStopsListVisible(timeout: 30) // Increased timeout for slower CI environment
             .verifyNearbyStopExists(stationName: station.name, shouldExist: true)
             .tapStationRow(stationName: station.name)
+        print("\n--- Accessibility Hierarchy After List Check ---")
+        print(app.debugDescription)
+        print("---------------------------------------------------")
 
         // --- 5. ASSERT: Verify navigation to the details screen ---
         // The destination screen should have a navigation bar with the title of the station.

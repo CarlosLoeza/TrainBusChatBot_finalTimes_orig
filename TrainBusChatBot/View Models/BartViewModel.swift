@@ -27,8 +27,11 @@ class BartViewModel: ObservableObject {
     }
     
     func findNearbyStops(from location: CLLocation, radius: CLLocationDistance) async {
+        print("[CI DEBUG] BartViewModel findNearbyStops: Received location: \(location.description)")
+        print("[CI DEBUG] BartViewModel findNearbyStops: BartManager has \(bartManager.stops.count) stops loaded.")
         isLoadingStops = true 
         let foundStops = await bartManager.findNearbyStops(from: location, radius: radius)
+        print("[CI DEBUG] BartViewModel findNearbyStops: Found \(foundStops.count) nearby stops.")
         self.nearbyStops = foundStops
         
         if let firstStop = foundStops.first {

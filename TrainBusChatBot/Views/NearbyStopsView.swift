@@ -53,11 +53,13 @@ struct NearbyStopsView: View {
             }
             .navigationTitle("Nearby BART")
             .onReceive(locationManager.$location) { location in
-                print("onReceive triggered. Location: \(location?.coordinate.latitude ?? 0), \(location?.coordinate.longitude ?? 0)")
+                print("[CI DEBUG] NearbyStopsView.onReceive: Location received: \(location?.description ?? "nil").")
                 guard let location = location else {
+                    print("[CI DEBUG] NearbyStopsView.onReceive: Location is nil, stopping.")
                     bartViewModel.isLoadingStops = false // Stop loading if location is nil
                     return
                 }
+                print("[CI DEBUG] NearbyStopsView.onReceive: Location is valid, starting findNearbyStops task.")
                 Task {
                     await bartViewModel.findNearbyStops(from: location, radius: 1000)
                 }

@@ -17,10 +17,11 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("[CI DEBUG] LocationManager didUpdateLocations: Received location - \(locations.first?.description ?? "nil")")
         location = locations.first
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Error getting location: \(error)")
+        print("[CI DEBUG] LocationManager didFailWithError: \(error.localizedDescription)")
     }
 }
