@@ -87,8 +87,11 @@ final class NearbyViewUITests: XCTestCase {
     /// - Parameter station: The StationTestData containing the station's name and location.
     private func performNearbyStationTest(station: StationTestData) throws {
         // --- 1. ARRANGE: Set the device's simulated location. ---
-        // XCTest will automatically terminate and relaunch the app after setting the location.
         XCUIDevice.shared.location = XCUILocation(location: station.location)
+
+        // Add a small delay to allow the simulated location to propagate.
+        // This helps prevent race conditions on slower CI machines.
+        sleep(2)
 
         // --- 2. ACT: Navigate to the Nearby tab and trigger location request ---
         let mainTabBar = MainTabBar(app: app)
