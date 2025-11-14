@@ -83,4 +83,4 @@ final class NearbyViewUITests: BaseXCUITestCase {
         XCTAssertTrue(app.navigationBars["\(station.name)"].waitForExistence(timeout: 5), "Should navigate to the Train List view for \(station.name).")
     }
 }
-}
+
