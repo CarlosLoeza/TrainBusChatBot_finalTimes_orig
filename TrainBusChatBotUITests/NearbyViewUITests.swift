@@ -35,7 +35,7 @@ final class NearbyViewUITests: BaseXCUITestCase {
     // MARK: - Test Functions
 
     /// Tests the nearby station functionality for multiple stations by relaunching the app for each location.
-    func testNearbyStations() throws {
+    func testNearbyStations_DirectInjection() throws {
         for station in stationsToTest {
             // --- 1. ARRANGE: Set the app's launch environment to simulate the location. ---
             app = XCUIApplication()
@@ -86,12 +86,11 @@ final class NearbyViewUITests: BaseXCUITestCase {
         
         // --- 3. ASSERT: Verify the station appears in the list ---
         nearbyStopScreen
-            .isNearbyStopsListVisible(timeout: 30) // Increased timeout for slower CI environment
+            .isNearbyStopsListVisible(timeout: 30)
             .verifyNearbyStopExists(stationName: station.name, shouldExist: true)
             .tapStationRow(stationName: station.name)
 
         // --- 4. ASSERT: Verify navigation to the details screen ---
-        // The destination screen should have a navigation bar with the title of the station.
         XCTAssertTrue(app.navigationBars["\(station.name)"].waitForExistence(timeout: 5), "Should navigate to the Train List view for \(station.name).")
     }
 }

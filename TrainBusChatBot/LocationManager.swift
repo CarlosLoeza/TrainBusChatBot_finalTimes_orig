@@ -12,17 +12,23 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func requestLocation() {
+        print("[CI DEBUG] requestLocation() called.")
+        
+        // --- Direct Injection for UI Tests ---
         if let coordString = ProcessInfo.processInfo.environment["SIMULATED_LOCATION"] {
+            print("[CI DEBUG] SIMULATED_LOCATION found: \(coordString)")
             let parts = coordString.split(separator: ",")
             if parts.count == 2,
                let lat = Double(parts[0]),
                let lon = Double(parts[1])
             {
                 let mockLocation = CLLocation(latitude: lat, longitude: lon)
+                // Directly call the delegate method to bypass the system's location manager
                 self.locationManager(self.locationManager, didUpdateLocations: [mockLocation])
                 return
             }
         }
+        // --- End Direct Injection ---
         
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
