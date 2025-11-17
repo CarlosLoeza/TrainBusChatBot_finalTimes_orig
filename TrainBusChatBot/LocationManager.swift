@@ -12,6 +12,18 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func requestLocation() {
+        if let coordString = ProcessInfo.processInfo.environment["SIMULATED_LOCATION"] {
+            let parts = coordString.split(separator: ",")
+            if parts.count == 2,
+               let lat = Double(parts[0]),
+               let lon = Double(parts[1])
+            {
+                let mockLocation = CLLocation(latitude: lat, longitude: lon)
+                self.locationManager(self.locationManager, didUpdateLocations: [mockLocation])
+                return
+            }
+        }
+        
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
     }

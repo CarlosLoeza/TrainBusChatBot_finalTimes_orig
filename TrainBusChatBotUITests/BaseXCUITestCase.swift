@@ -31,3 +31,10 @@ class BaseXCUITestCase: XCTestCase {
         // app.launchArguments.append("--reset-user-defaults")
     }
 }
+
+extension XCUIApplication {
+    func forceLocation(latitude: Double, longitude: Double) {
+        let coord = "\(latitude),\(longitude)"
+        self.launchEnvironment["SIMULATED_LOCATION"] = coord
+    }
+}
