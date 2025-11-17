@@ -29,26 +29,23 @@ final class NearbyViewUITests: BaseXCUITestCase {
     // The setUpWithError and tearDownWithError methods are now inherited from BaseXCUITestCase.
     // The `app` property is also inherited.
 
-    // MARK: - Test Functions for Each Station
+    // MARK: - Test Functions
 
-    /// Tests the nearby station functionality for Powell Street.
-    func testNearby_PowellStreet() throws {
-        try performNearbyStationTest(station: stationsToTest[0])
-    }
+    /// Tests the nearby station functionality for multiple stations.
+    func testNearbyStations() throws {
+        // Handle location permission alert
+        addUIInterruptionMonitor(withDescription: "Location Permission") { alert in
+            if alert.buttons["Allow While Using App"].exists {
+                alert.buttons["Allow While Using App"].tap()
+                return true
+            }
+            return false
+        }
+        app.tap() // Trigger the alert
 
-    /// Tests the nearby station functionality for Colma.
-    func testNearby_Colma() throws {
-        try performNearbyStationTest(station: stationsToTest[1])
-    }
-
-    /// Tests the nearby station functionality for Daly City.
-    func testNearby_DalyCity() throws {
-        try performNearbyStationTest(station: stationsToTest[2])
-    }
-
-    /// Tests the nearby station functionality for Montgomery Street.
-    func testNearby_MontgomeryStreet() throws {
-        try performNearbyStationTest(station: stationsToTest[3])
+        for station in stationsToTest {
+            try performNearbyStationTest(station: station)
+        }
     }
 
     // MARK: - Helper Method
