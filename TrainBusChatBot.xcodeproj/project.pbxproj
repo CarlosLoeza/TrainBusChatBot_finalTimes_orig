@@ -575,6 +575,7 @@
 /* Begin XCBuildConfiguration section */
 		07DB13842EA015CC00C6487E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0734C1502ECFE5EF00C1D373 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -694,6 +695,7 @@
 		};
 		07DB13872EA015CC00C6487E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0734C1502ECFE5EF00C1D373 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -759,6 +761,7 @@
 		};
 		07DB138A2EA015CC00C6487E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0734C1502ECFE5EF00C1D373 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -799,6 +802,7 @@
 		};
 		07DB138D2EA015CC00C6487E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0734C1502ECFE5EF00C1D373 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
