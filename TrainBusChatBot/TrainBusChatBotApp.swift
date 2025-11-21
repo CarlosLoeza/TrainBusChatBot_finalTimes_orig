@@ -11,7 +11,6 @@ import SwiftUI
 struct TrainBusChatBotApp: App {
     @StateObject private var bartManagerWrapper = BartManagerWrapper()
     @State private var selectedTab = 0
-    @State private var nearbyTabID = UUID()
     
     init() {
         if ProcessInfo.processInfo.arguments.contains("--UITesting") {
@@ -27,7 +26,6 @@ struct TrainBusChatBotApp: App {
                     NavigationStack {
                         NearbyStopsView_ViewModelWrapper(bartManager: bartManager)
                     }
-                    .id(nearbyTabID)
                     .tabItem {
                         Label("Nearby", systemImage: "location.fill")
                     }
@@ -48,14 +46,6 @@ struct TrainBusChatBotApp: App {
                         Label("Chatbot", systemImage: "message.fill")
                     }
                     .tag(2)
-                }
-                .onChange(of: selectedTab) { oldValue, newValue in
-                    print("[DEBUG] Tab changed from \(oldValue) to \(newValue). Current nearbyTabID: \(nearbyTabID)")
-                    if oldValue == newValue && oldValue == 0 {
-                        print("[DEBUG] Nearby tab tapped while already selected. Resetting ID. Old ID: \(nearbyTabID)")
-                        nearbyTabID = UUID()
-                        print("[DEBUG] New nearbyTabID: \(nearbyTabID)")
-                    }
                 }
                 .onAppear {
                     let appearance = UITabBarAppearance()

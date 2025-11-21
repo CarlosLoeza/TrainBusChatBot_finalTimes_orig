@@ -9,7 +9,7 @@ class BartViewModel: ObservableObject {
     @Published var nearestStopDistance: CLLocationDistance? 
     @Published var isLoadingStops: Bool = false 
     
-    private let bartManager: BartManager
+    let bartManager: BartManager
 
     // Main initializer for actual app use
     init(bartManager: BartManager) {

@@ -62,7 +62,7 @@ struct NearbyStopsView: View {
             
             List(bartViewModel.nearbyStops) { stop in
                 let station = Station(abbr: stop.bartAbbr ?? "", name: stop.stop_name)
-                NavigationLink(destination: TrainListView(station: station)) {
+                NavigationLink(destination: TrainListView(station: station, bartManager: bartViewModel.bartManager)) {
                     VStack(alignment: .leading) {
                         Text(stop.stop_name)
                             .font(.headline)

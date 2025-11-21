@@ -2,9 +2,16 @@ import SwiftUI
 
 struct TrainListView: View {
     let station: Station
-    @StateObject private var vm = TrainListViewModel(bartManager: BartManager(isPreview: true))
+    let bartManager: BartManager // Accept BartManager as a parameter
+    @StateObject private var vm: TrainListViewModel
     @State private var selectedDirection: String = "" // Empty = show all
     @State private var timer: Timer? = nil
+
+    init(station: Station, bartManager: BartManager) {
+        self.station = station
+        self.bartManager = bartManager
+        _vm = StateObject(wrappedValue: TrainListViewModel(bartManager: bartManager))
+    }
 
     var body: some View {
         VStack {
@@ -21,6 +28,11 @@ struct TrainListView: View {
                     .padding(.top)
                 Spacer()
 
+            } else if let errorMessage = vm.errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .padding()
+                Spacer()
             } else if !vm.filteredETDs.isEmpty {
                 List {
                     ForEach(vm.filteredETDs) { etd in
@@ -40,6 +52,7 @@ struct TrainListView: View {
                 }
                 .id(vm.etds.map { $0.destination }.joined()) // Force redraw when ETDs update
                 .refreshable {
+                    print("[DEBUG] TrainListView: Pull-to-refresh triggered.")
                     await vm.fetchETD(for: station)
                     print("✅ Refreshed: \(vm.filteredETDs.count) trains")
                 }
@@ -63,11 +76,10 @@ struct TrainListView: View {
                 Text("No trains running. Next train at \(nextTrain).")
                     .padding()
 
-            } 
-//                else {
-//                Text("No more trains for today.")
-//                    .padding()
-//            }
+            } else {
+                Text("No more trains for today.")
+                    .padding()
+            }
         }
         .onChange(of: selectedDirection) { newDir in
             vm.direction = newDir
@@ -82,5 +94,5 @@ struct TrainListView: View {
 }
 
 #Preview {
-    TrainListView(station: Station(abbr: "MONT", name: "Montgomery St."))
+    TrainListView(station: Station(abbr: "MONT", name: "Montgomery St."), bartManager: BartManager(isPreview: true))
 }

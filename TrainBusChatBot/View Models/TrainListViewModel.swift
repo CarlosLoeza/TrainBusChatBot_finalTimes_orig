@@ -26,15 +26,19 @@ class TrainListViewModel: ObservableObject {
 
     @MainActor
     func fetchETD(for station: Station) async {
+        print("[DEBUG] TrainListViewModel: fetchETD called for station: \(station.name)")
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
 
         do {
             self.etds = try await BartNetworkManager.shared.fetchETD(for: station.abbr)
-            print("✅ Fetch success: \(etds.count) ETDs")
+            print("✅ Fetch success: \(etds.count) ETDs for station: \(station.name)")
+        } catch is CancellationError {
+            print("ℹ️ Fetch for station \(station.name) was cancelled.")
+            // Do nothing, this is expected behavior for cancelled tasks
         } catch {
-            print("❌ Fetch failed: \(error.localizedDescription)")
+            print("❌ Fetch failed for station \(station.name): \(error.localizedDescription)")
             self.etds = []
             self.errorMessage = (error as? BartAPIError)?.errorDescription ?? "An unknown error occurred."
         }
