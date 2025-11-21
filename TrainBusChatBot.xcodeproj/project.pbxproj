@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0734C1512ECFE5EF00C1D373 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 0734C1502ECFE5EF00C1D373 /* Secrets.xcconfig */; };
+		0734C1572ED122A400C1D373 /* Secrets_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 0734C1562ED122A400C1D373 /* Secrets_Debug.xcconfig */; };
 		076E7B652EB53D8300254F78 /* TrainListModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B642EB53D8300254F78 /* TrainListModels.swift */; };
 		076E7B682EB9595200254F78 /* BartNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B672EB9595200254F78 /* BartNetworkManager.swift */; };
 		076E7B6A2EB971CA00254F78 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076E7B692EB971CA00254F78 /* FavoritesView.swift */; };
@@ -85,6 +86,7 @@
 /* Begin PBXFileReference section */
 		0734C1502ECFE5EF00C1D373 /* Secrets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Secrets.xcconfig; path = ../../Secrets.xcconfig; sourceTree = "<group>"; };
 		0734C1532ED0023000C1D373 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		0734C1562ED122A400C1D373 /* Secrets_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Secrets_Debug.xcconfig; sourceTree = "<group>"; };
 		076E7B642EB53D8300254F78 /* TrainListModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainListModels.swift; sourceTree = "<group>"; };
 		076E7B672EB9595200254F78 /* BartNetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BartNetworkManager.swift; sourceTree = "<group>"; };
 		076E7B692EB971CA00254F78 /* FavoritesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				076E7B612EB53CFE00254F78 /* Views */,
 				076E7B662EB9595200254F78 /* Network */,
 				0734C1502ECFE5EF00C1D373 /* Secrets.xcconfig */,
+				0734C1562ED122A400C1D373 /* Secrets_Debug.xcconfig */,
 				07DB13652EA015CB00C6487E /* TrainBusChatBotApp.swift */,
 				07DB146B2EA3017C00C6487E /* LaunchScreen.storyboard */,
 				07DB13692EA015CC00C6487E /* Assets.xcassets */,
@@ -473,6 +476,7 @@
 				07DB146C2EA3017C00C6487E /* LaunchScreen.storyboard in Resources */,
 				07DB14462EA02A4400C6487E /* attributions.txt in Resources */,
 				0734C1512ECFE5EF00C1D373 /* Secrets.xcconfig in Resources */,
+				0734C1572ED122A400C1D373 /* Secrets_Debug.xcconfig in Resources */,
 				07DB143F2EA02A4400C6487E /* stop_times.txt in Resources */,
 				07DB136D2EA015CC00C6487E /* Preview Assets.xcassets in Resources */,
 				07DB14432EA02A4400C6487E /* trips.txt in Resources */,
