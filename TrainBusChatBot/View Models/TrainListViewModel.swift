@@ -11,8 +11,6 @@ class TrainListViewModel: ObservableObject {
     @Published var direction: String = "" // Made @Published
     private let bartManager: BartManager
 
-    let apiKey = "MW9S-E7SL-26DU-VV8V"
-
     init(bartManager: BartManager) {
         self.bartManager = bartManager
     }
@@ -29,44 +27,26 @@ class TrainListViewModel: ObservableObject {
     @MainActor
     func fetchETD(for station: Station) async {
         isLoading = true
+        errorMessage = nil
         defer { isLoading = false }
 
-        let urlString = "https://api.bart.gov/api/etd.aspx?cmd=etd&orig=\(station.abbr.lowercased())&key=\(apiKey)&json=y"
-        guard let url = URL(string: urlString) else { return }
-
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let response = try JSONDecoder().decode(BartETDResponse.self, from: data)
-            self.etds = response.root.station.first?.etd ?? []
+            self.etds = try await BartNetworkManager.shared.fetchETD(for: station.abbr)
             print("✅ Fetch success: \(etds.count) ETDs")
         } catch {
-            // Ignore cancellation gracefully
-            if (error as? URLError)?.code == .cancelled {
-                return
-            }
             print("❌ Fetch failed: \(error.localizedDescription)")
             self.etds = []
+            self.errorMessage = (error as? BartAPIError)?.errorDescription ?? "An unknown error occurred."
         }
     }
 
 
     func fetchStationSchedule(for abbr: String) async {
-        guard let url = URL(string: "https://api.bart.gov/api/sched.aspx?cmd=stnsched&orig=\(abbr)&key=\(apiKey)&json=y") else {
-            self.errorMessage = "Invalid schedule URL"
-            return
-        }
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let scheduleResponse = try JSONDecoder().decode(BartStationScheduleResponse.self, from: data)
-            self.scheduleItems = scheduleResponse.root.station.item
+            self.scheduleItems = try await BartNetworkManager.shared.fetchStationSchedule(for: abbr)
         } catch {
-            if let urlError = error as? URLError, urlError.code == .cancelled {
-                print("Schedule fetch cancelled — ignoring.")
-                return
-            } else {
-                print("Decoding schedule error: \(error)")
-                self.errorMessage = "Failed to fetch schedule: \(error.localizedDescription)"
-            }
+            print("❌ Decoding schedule error: \(error.localizedDescription)")
+            self.errorMessage = (error as? BartAPIError)?.errorDescription ?? "An unknown error occurred."
         }
     }
     

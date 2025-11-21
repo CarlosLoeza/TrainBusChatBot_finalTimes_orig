@@ -6,72 +6,70 @@ struct FavoritesView: View {
     @State private var isProcessingTap = false // New state variable
 
     var body: some View {
-        NavigationView {
-            List {
-                Section(header: Text("Routes")) {
-                    ForEach(chatbotVM.routeFavorites) { route in
-                        HStack {
-                            Text(route.name)
-                                .onTapGesture {
-                                    if !isProcessingTap { // Only process if not already processing
-                                        isProcessingTap = true // Set flag
-                                        Task {
-                                            await chatbotVM.processFavorite(route)
-                                            selectedTab = 2
-                                            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
-                                            isProcessingTap = false // Reset flag after delay
-                                        }
+        List {
+            Section(header: Text("Routes")) {
+                ForEach(chatbotVM.routeFavorites) { route in
+                    HStack {
+                        Text(route.name)
+                            .onTapGesture {
+                                if !isProcessingTap { // Only process if not already processing
+                                    isProcessingTap = true // Set flag
+                                    Task {
+                                        await chatbotVM.processFavorite(route)
+                                        selectedTab = 2
+                                        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+                                        isProcessingTap = false // Reset flag after delay
                                     }
                                 }
-                            Spacer()
-                            Button(action: {
-                                chatbotVM.toggleFavorite(query: route.query)
-                            }) {
-                                Image(systemName: "star.fill")
-                                    .foregroundColor(.yellow)
                             }
-                            .accessibilityIdentifier("unfavoriteButton_\(route.name)")
+                        Spacer()
+                        Button(action: {
+                            chatbotVM.toggleFavorite(query: route.query)
+                        }) {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
                         }
-                        .accessibilityIdentifier("routeFavoriteRow_\(route.name)")
-                        .disabled(isProcessingTap) // Disable the row during processing
+                        .accessibilityIdentifier("unfavoriteButton_\(route.name)")
                     }
-                    .onDelete(perform: deleteRoute)
+                    .accessibilityIdentifier("routeFavoriteRow_\(route.name)")
+                    .disabled(isProcessingTap) // Disable the row during processing
                 }
-
-                Section(header: Text("Stations")) {
-                    ForEach(chatbotVM.stationFavorites) { station in
-                        HStack {
-                            Text(station.name)
-                                .onTapGesture {
-                                    if !isProcessingTap { // Only process if not already processing
-                                        isProcessingTap = true // Set flag
-                                        Task {
-                                            await chatbotVM.processFavorite(station)
-                                            selectedTab = 2
-                                            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
-                                            isProcessingTap = false // Reset flag after delay
-                                        }
+                .onDelete(perform: deleteRoute)
+            }
+            
+            Section(header: Text("Stations")) {
+                ForEach(chatbotVM.stationFavorites) { station in
+                    HStack {
+                        Text(station.name)
+                            .onTapGesture {
+                                if !isProcessingTap { // Only process if not already processing
+                                    isProcessingTap = true // Set flag
+                                    Task {
+                                        await chatbotVM.processFavorite(station)
+                                        selectedTab = 2
+                                        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+                                        isProcessingTap = false // Reset flag after delay
                                     }
                                 }
-                            Spacer()
-                            Button(action: {
-                                chatbotVM.toggleFavorite(query: station.query)
-                            }) {
-                                Image(systemName: "star.fill")
-                                    .foregroundColor(.yellow)
                             }
+                        Spacer()
+                        Button(action: {
+                            chatbotVM.toggleFavorite(query: station.query)
+                        }) {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.yellow)
                         }
-                        .accessibilityIdentifier("stationFavoriteRow_\(station.name)")
-                        .disabled(isProcessingTap) // Disable the row during processing
                     }
-                    .onDelete(perform: deleteStation)
+                    .accessibilityIdentifier("stationFavoriteRow_\(station.name)")
+                    .disabled(isProcessingTap) // Disable the row during processing
                 }
+                .onDelete(perform: deleteStation)
             }
-            .accessibilityIdentifier("favoritesList")
-            .navigationTitle("Favorites")
-            .toolbar {
-                EditButton()
-            }
+        }
+        .accessibilityIdentifier("favoritesList")
+        .navigationTitle("Favorites")
+        .toolbar {
+            EditButton()
         }
     }
 

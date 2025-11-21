@@ -11,6 +11,7 @@ import SwiftUI
 struct TrainBusChatBotApp: App {
     @StateObject private var bartManagerWrapper = BartManagerWrapper()
     @State private var selectedTab = 0
+    @State private var nearbyTabID = UUID()
     
     init() {
         if ProcessInfo.processInfo.arguments.contains("--UITesting") {
@@ -23,25 +24,38 @@ struct TrainBusChatBotApp: App {
             if let bartManager = bartManagerWrapper.bartManager {
                 let chatbotVM = ChatbotViewModel(bartManager: bartManager)
                 TabView(selection: $selectedTab) {
-                    NearbyStopsView_ViewModelWrapper(bartManager: bartManager)
-                        .tabItem {
-                            Label("Nearby", systemImage: "location.fill")
-                        }
-                        .tag(0)
+                    NavigationStack {
+                        NearbyStopsView_ViewModelWrapper(bartManager: bartManager)
+                    }
+                    .id(nearbyTabID)
+                    .tabItem {
+                        Label("Nearby", systemImage: "location.fill")
+                    }
+                    .tag(0)
                     
-                    FavoritesView(chatbotVM: chatbotVM, selectedTab: $selectedTab)
-                        .tabItem {
-                            Label("Favorites", systemImage: "star.fill")
-                        }
-                        .tag(1)
+                    NavigationStack {
+                        FavoritesView(chatbotVM: chatbotVM, selectedTab: $selectedTab)
+                    }
+                    .tabItem {
+                        Label("Favorites", systemImage: "star.fill")
+                    }
+                    .tag(1)
 
-                    ChatbotView(chatbotVM: chatbotVM)
-                        .tabItem {
-                            Label("Chatbot", systemImage: "message.fill")
-                        }
-                        .tag(2)
-
-                    
+                    NavigationStack {
+                        ChatbotView(chatbotVM: chatbotVM)
+                    }
+                    .tabItem {
+                        Label("Chatbot", systemImage: "message.fill")
+                    }
+                    .tag(2)
+                }
+                .onChange(of: selectedTab) { oldValue, newValue in
+                    print("[DEBUG] Tab changed from \(oldValue) to \(newValue). Current nearbyTabID: \(nearbyTabID)")
+                    if oldValue == newValue && oldValue == 0 {
+                        print("[DEBUG] Nearby tab tapped while already selected. Resetting ID. Old ID: \(nearbyTabID)")
+                        nearbyTabID = UUID()
+                        print("[DEBUG] New nearbyTabID: \(nearbyTabID)")
+                    }
                 }
                 .onAppear {
                     let appearance = UITabBarAppearance()

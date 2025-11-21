@@ -14,6 +14,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     func requestLocation() {
         print("[CI DEBUG] requestLocation() called.")
         
+        #if DEBUG
         // --- Direct Injection for UI Tests ---
         if let coordString = ProcessInfo.processInfo.environment["SIMULATED_LOCATION"] {
             print("[CI DEBUG] SIMULATED_LOCATION found: \(coordString)")
@@ -29,6 +30,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             }
         }
         // --- End Direct Injection ---
+        #endif
         
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
