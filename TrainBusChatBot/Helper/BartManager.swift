@@ -2,7 +2,7 @@ import Foundation
 import CoreLocation
 import CSV
 
-class BartManager {
+class BartManager: ObservableObject {
     
     struct Stop: Codable, Identifiable {
         var id: String { stop_id }
@@ -65,6 +65,7 @@ class BartManager {
         let timepoint: String
     }
     
+    @Published var isDataLoaded = false
     public var stops: [Stop] = []
     public var routes: [Route] = []
     private var trips: [Trip] = []
@@ -180,6 +181,7 @@ class BartManager {
         if isPreview {
             // Do not load real data for previews
             self.stops = []
+            self.isDataLoaded = true
         }
     }
     
@@ -200,6 +202,11 @@ class BartManager {
         printStationRouteInfo()
 
         print("GTFS Data and indexes loaded.")
+        
+        DispatchQueue.main.async {
+            self.isDataLoaded = true
+            print("BartManager isDataLoaded set to true")
+        }
     }
     
     private func buildStopNameToIdsMap() {

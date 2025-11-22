@@ -30,7 +30,7 @@ class ChatbotViewModel: ObservableObject {
         self.sortedAliases = bartManager.bartAbbreviationMap.keys.sorted { $0.count > $1.count }
         
         // Add initial prompt message
-        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Daly City BART' or 'Next Daly City Bart to Powell' if you know your start and destination stop.", isUser: false))
+        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Daly City BART' or 'Next Daly City Bart to Powell' or 'Next Daly City BART to Powell Street' if you know your start and destination stop.", isUser: false))
         loadFavoriteRoutes()
     }
 
@@ -97,8 +97,24 @@ class ChatbotViewModel: ObservableObject {
         favoriteRoutes.removeAll { favoritesToRemove.contains($0) }
         saveFavoriteRoutes()
     }
+    
+    private func waitForData() async {
+        // Wait until the BartManager has loaded its data
+        while !bartManager.isDataLoaded {
+            print("ChatbotViewModel: Waiting for BartManager data to load...")
+            do {
+                try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+            } catch {
+                print("Task sleep was cancelled.")
+                break // Exit if the task is cancelled
+            }
+        }
+        print("ChatbotViewModel: BartManager data is loaded.")
+    }
 
     func processQuery(_ query: String, userLocation: CLLocation?) async {
+        await waitForData()
+        
         // Debounce logic
         if let lastTime = lastQueryProcessTime, Date().timeIntervalSince(lastTime) < debounceInterval {
             print("Debounced: Query ignored due to rapid tapping.")
@@ -128,6 +144,8 @@ class ChatbotViewModel: ObservableObject {
     }
 
     func processFavorite(_ favorite: FavoriteRoute) async {
+        await waitForData()
+        
         isLoadingResponse = true
         messages.append(Message(content: favorite.name, isUser: true))
 
@@ -368,8 +386,8 @@ class ChatbotViewModel: ObservableObject {
 
     private func findStation(byAbbr abbr: String) -> Station? {
         if let foundStop = bartManager.stops.first(where: { $0.bartAbbr?.lowercased() == abbr.lowercased() }) {
-            return Station(abbr: foundStop.bartAbbr ?? "", name: foundStop.stop_name)
-        }
+                return Station(abbr: foundStop.bartAbbr ?? "", name: foundStop.stop_name)
+            }
         return nil
     }
 

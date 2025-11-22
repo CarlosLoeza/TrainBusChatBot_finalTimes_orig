@@ -33,26 +33,30 @@ class TrainListViewModel: ObservableObject {
         // Cancel any existing task
         currentFetchTask?.cancel()
         
-        currentFetchTask = Task {
+        let fetchTask = Task {
             isLoading = true
             errorMessage = nil
             defer { 
                 isLoading = false
-                currentFetchTask = nil // Clear the task when it completes or is cancelled
             }
 
-            do {
-                self.etds = try await BartNetworkManager.shared.fetchETD(for: station.abbr)
-                self.lastUpdatedTime = Date() // Update last updated time on success
-                print("✅ Fetch success: \(etds.count) ETDs for station: \(station.name)")
-            } catch is CancellationError {
-                print("ℹ️ Fetch for station \(station.name) was cancelled.")
-                // Do nothing, this is expected behavior for cancelled tasks
-            } catch {
-                print("❌ Fetch failed for station \(station.name): \(error.localizedDescription)")
-                self.etds = []
-                self.errorMessage = (error as? BartAPIError)?.errorDescription ?? "An unknown error occurred."
-            }
+            // This task can now throw
+            let fetchedETDs = try await BartNetworkManager.shared.fetchETD(for: station.abbr)
+            self.etds = fetchedETDs
+            self.lastUpdatedTime = Date() // Update last updated time on success
+            print("✅ Fetch success: \(etds.count) ETDs for station: \(station.name)")
+        }
+        
+        currentFetchTask = fetchTask
+        
+        do {
+            try await fetchTask.value
+        } catch is CancellationError {
+            print("ℹ️ Fetch for station \(station.name) was cancelled.")
+        } catch {
+            print("❌ Fetch failed for station \(station.name): \(error.localizedDescription)")
+            self.etds = []
+            self.errorMessage = (error as? BartAPIError)?.errorDescription ?? "An unknown error occurred."
         }
     }
 
