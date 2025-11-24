@@ -9,6 +9,8 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     override init() {
         super.init()
         locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        print("[Debug] LocationManager init")
     }
 
     func requestLocation() {

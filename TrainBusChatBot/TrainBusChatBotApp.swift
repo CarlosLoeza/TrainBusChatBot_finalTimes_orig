@@ -10,9 +10,11 @@ import SwiftUI
 @main
 struct TrainBusChatBotApp: App {
     @StateObject private var bartManagerWrapper = BartManagerWrapper()
+    @StateObject private var locationManager = LocationManager()
     @State private var selectedTab = 0
     
     init() {
+        print("[Debug] TrainBusChatBotApp init")
         if ProcessInfo.processInfo.arguments.contains("--UITesting") {
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
         }
@@ -24,7 +26,7 @@ struct TrainBusChatBotApp: App {
                 let chatbotVM = ChatbotViewModel(bartManager: bartManager)
                 TabView(selection: $selectedTab) {
                     NavigationStack {
-                        NearbyStopsView_ViewModelWrapper(bartManager: bartManager)
+                        NearbyStopsView_ViewModelWrapper(bartManager: bartManager, locationManager: locationManager)
                     }
                     .tabItem {
                         Label("Nearby", systemImage: "location.fill")
@@ -40,7 +42,7 @@ struct TrainBusChatBotApp: App {
                     .tag(1)
 
                     NavigationStack {
-                        ChatbotView(chatbotVM: chatbotVM)
+                        ChatbotView(chatbotVM: chatbotVM, locationManager: locationManager)
                     }
                     .tabItem {
                         Label("Chatbot", systemImage: "message.fill")
@@ -48,6 +50,7 @@ struct TrainBusChatBotApp: App {
                     .tag(2)
                 }
                 .onAppear {
+                    locationManager.requestLocation()
                     let appearance = UITabBarAppearance()
                     appearance.configureWithOpaqueBackground()
                     appearance.backgroundColor = .systemGray6
@@ -56,8 +59,8 @@ struct TrainBusChatBotApp: App {
                 }
             } else {
                 ProgressView("Loading BART data...")
-                    .task {
-                        await bartManagerWrapper.loadInitialData()
+                    .onAppear {
+                        bartManagerWrapper.loadInitialData()
                     }
             }
         }

@@ -187,54 +187,78 @@ class BartManager: ObservableObject {
     
     private func loadGTFSData() async {
         print("loadGTFSData called")
-        await loadStops()
-        await loadRoutes()
-        await loadTrips()
-        await loadStopTimes()
         
-        // Build all maps for fast lookups
-        buildStopNameToIdsMap()
-        buildTripsByIdMap()
-        buildRouteByIdMap()
-        buildStopTimesByTripIdMap()
-        buildRoutesByStopIdMap()
-        buildTerminusStationsMap()
-        printStationRouteInfo()
-
-        print("GTFS Data and indexes loaded.")
+        let (stops, routes, trips, stopTimes, stopNameToIds, tripsById, routeById, stopTimesByTripId, routesByStopId, terminusStations) = await Task.detached {
+            () -> ([Stop], [Route], [Trip], [StopTime], [String: Set<String>], [String: Trip], [String: Route], [String: [StopTime]], [String: Set<String>], Set<String>) in
+            
+            let stopIds = self.loadStopIdsFromStopTimes()
+            
+            async let stops = self.loadStops(stopIds: stopIds)
+            async let routes = self.loadRoutes()
+            async let trips = self.loadTrips()
+            async let stopTimes = self.loadStopTimes()
+            
+            let loadedStops = await stops
+            let loadedRoutes = await routes
+            let loadedTrips = await trips
+            let loadedStopTimes = await stopTimes
+            
+            let stopNameToIds = self.buildStopNameToIdsMap(stops: loadedStops)
+            let tripsById = self.buildTripsByIdMap(trips: loadedTrips)
+            let routeById = self.buildRouteByIdMap(routes: loadedRoutes)
+            let stopTimesByTripId = self.buildStopTimesByTripIdMap(stopTimes: loadedStopTimes)
+            let routesByStopId = self.buildRoutesByStopIdMap(stopTimes: loadedStopTimes, tripsById: tripsById)
+            let terminusStations = self.buildTerminusStationsMap(stops: loadedStops, trips: loadedTrips, stopTimesByTripId: stopTimesByTripId)
+            
+            return (loadedStops, loadedRoutes, loadedTrips, loadedStopTimes, stopNameToIds, tripsById, routeById, stopTimesByTripId, routesByStopId, terminusStations)
+        }.value
         
-        DispatchQueue.main.async {
+        await MainActor.run {
+            self.stops = stops
+            self.routes = routes
+            self.trips = trips
+            self.stopTimes = stopTimes
+            self.stopNameToIds = stopNameToIds
+            self.tripsById = tripsById
+            self.routeById = routeById
+            self.stopTimesByTripId = stopTimesByTripId
+            self.routesByStopId = routesByStopId
+            self.terminusStations = terminusStations
+            
             self.isDataLoaded = true
+            print("GTFS Data and indexes loaded.")
             print("BartManager isDataLoaded set to true")
         }
     }
     
-    private func buildStopNameToIdsMap() {
+    private func buildStopNameToIdsMap(stops: [Stop]) -> [String: Set<String>] {
         print("Building stop name to IDs map...")
         var map: [String: Set<String>] = [:]
         for stop in stops {
             let name = stop.stop_name.lowercased()
             map[name, default: Set<String>()].insert(stop.stop_id)
         }
-        self.stopNameToIds = map
         print("Stop name to IDs map built. Contains \(map.count) entries.")
+        return map
     }
     
-    private func buildTripsByIdMap() {
+    private func buildTripsByIdMap(trips: [Trip]) -> [String: Trip] {
         print("Building trips by ID map...")
-        self.tripsById = Dictionary(uniqueKeysWithValues: trips.map { ($0.trip_id, $0) })
-        print("Trips by ID map built. Contains \(tripsById.count) entries.")
+        let map = Dictionary(uniqueKeysWithValues: trips.map { ($0.trip_id, $0) })
+        print("Trips by ID map built. Contains \(map.count) entries.")
+        return map
     }
 
-    private func buildRouteByIdMap() {
+    private func buildRouteByIdMap(routes: [Route]) -> [String: Route] {
         print("Building route by ID map...")
-        self.routeById = Dictionary(uniqueKeysWithValues: routes.map { ($0.route_id, $0) })
-        print("Route by ID map built. Contains \(routeById.count) entries.")
+        let map = Dictionary(uniqueKeysWithValues: routes.map { ($0.route_id, $0) })
+        print("Route by ID map built. Contains \(map.count) entries.")
+        return map
     }
 
-    private func buildStopTimesByTripIdMap() {
+    private func buildStopTimesByTripIdMap(stopTimes: [StopTime]) -> [String: [StopTime]] {
         print("Building stop times by trip ID map...")
-        var map = Dictionary(grouping: self.stopTimes, by: { $0.trip_id })
+        var map = Dictionary(grouping: stopTimes, by: { $0.trip_id })
 
         for (tripId, stopTimes) in map {
             map[tripId] = stopTimes.sorted { (st1, st2) -> Bool in
@@ -243,11 +267,11 @@ class BartManager: ObservableObject {
             }
         }
         
-        self.stopTimesByTripId = map
         print("Stop times by trip ID map built. Contains \(map.count) entries.")
+        return map
     }
 
-    private func buildRoutesByStopIdMap() {
+    private func buildRoutesByStopIdMap(stopTimes: [StopTime], tripsById: [String: Trip]) -> [String: Set<String>] {
         print("Building routes by stop ID map...")
         var map: [String: Set<String>] = [:]
         for stopTime in stopTimes {
@@ -255,103 +279,97 @@ class BartManager: ObservableObject {
                 map[stopTime.stop_id, default: Set<String>()].insert(trip.route_id)
             }
         }
-        self.routesByStopId = map
         print("Routes by stop ID map built. Contains \(map.count) entries.")
+        return map
     }
 
     
-    private func loadStops() async {
+    private func loadStops(stopIds: Set<String>) -> [Stop] {
         print("loadStops called")
-        let stopIds = await loadStopIdsFromStopTimes()
-        print("Number of stopIds from stop_times: \(stopIds.count)")
         
-        await Task.detached { @MainActor in
-            if let url = Bundle.main.url(forResource: "stops", withExtension: "txt") {
-                do {
-                    let csv = try CSVReader(stream: InputStream(url: url)!)
-                    var allStops: [Stop] = []
-                    _ = csv.next() // Skip header
-                    while let row = csv.next() {
-                        if row.count == 13 {
-                            var stop = Stop(stop_id: row[0], stop_code: row[1], stop_name: row[2], stop_lat: row[3], stop_lon: row[4], zone_id: row[5], stop_desc: row[6], stop_url: row[7], location_type: row[8], parent_station: row[9], stop_timezone: row[10], wheelchair_boarding: row[11], platform_code: row[12])
+        if let url = Bundle.main.url(forResource: "stops", withExtension: "txt") {
+            do {
+                let csv = try CSVReader(stream: InputStream(url: url)!)
+                var allStops: [Stop] = []
+                _ = csv.next() // Skip header
+                while let row = csv.next() {
+                    if row.count == 13 {
+                        var stop = Stop(stop_id: row[0], stop_code: row[1], stop_name: row[2], stop_lat: row[3], stop_lon: row[4], zone_id: row[5], stop_desc: row[6], stop_url: row[7], location_type: row[8], parent_station: row[9], stop_timezone: row[10], wheelchair_boarding: row[11], platform_code: row[12])
                         stop.bartAbbr = self.bartAbbreviationMap[stop.stop_name]
-                            allStops.append(stop)
-                        }
+                        allStops.append(stop)
                     }
-                    self.stops = allStops.filter { stopIds.contains($0.stop_id) }
-                } catch {
-                    print("Error initializing CSVReader for stops.txt: \(error)")
                 }
-            } else {
-                print("stops.txt File URL not found")
+                return allStops.filter { stopIds.contains($0.stop_id) }
+            } catch {
+                print("Error initializing CSVReader for stops.txt: \(error)")
             }
-        }.value
+        } else {
+            print("stops.txt File URL not found")
+        }
+        return []
     }
     
-    private func loadRoutes() async {
-        await Task.detached { @MainActor in
-            if let url = Bundle.main.url(forResource: "routes", withExtension: "txt") {
-                do {
-                    let csv = try CSVReader(stream: InputStream(url: url)!)
-                    _ = csv.next() // Skip header
-                    var loadedRoutes: [Route] = []
-                    while let row = csv.next() {
-                        if row.count == 9 {
-                            let route = Route(route_id: row[0], agency_id: row[1], route_short_name: row[2], route_long_name: row[3], route_desc: row[4], route_type: row[5], route_url: row[6], route_color: row[7], route_text_color: row[8])
-                            loadedRoutes.append(route)
-                        }
+    private func loadRoutes() -> [Route] {
+        if let url = Bundle.main.url(forResource: "routes", withExtension: "txt") {
+            do {
+                let csv = try CSVReader(stream: InputStream(url: url)!)
+                _ = csv.next() // Skip header
+                var loadedRoutes: [Route] = []
+                while let row = csv.next() {
+                    if row.count == 9 {
+                        let route = Route(route_id: row[0], agency_id: row[1], route_short_name: row[2], route_long_name: row[3], route_desc: row[4], route_type: row[5], route_url: row[6], route_color: row[7], route_text_color: row[8])
+                        loadedRoutes.append(route)
                     }
-                    self.routes = loadedRoutes
-                } catch {
-                    print("Error loading routes.txt: \(error)")
                 }
+                return loadedRoutes
+            } catch {
+                print("Error loading routes.txt: \(error)")
             }
-        }.value
+        }
+        return []
     }
     
-    private func loadTrips() async {
-        await Task.detached { @MainActor in
-            if let url = Bundle.main.url(forResource: "trips", withExtension: "txt") {
-                do {
-                    let csv = try CSVReader(stream: InputStream(url: url)!)
-                     _ = csv.next() // Skip header
-                    var loadedTrips: [Trip] = []
-                    while let row = csv.next() {
-                        if row.count == 10 {
-                            let trip = Trip(route_id: row[0], service_id: row[1], trip_id: row[2], trip_headsign: row[3], direction_id: row[4], block_id: row[5], shape_id: row[6], trip_short_name: row[7], wheelchair_accessible: row[8], bikes_allowed: row[9])
-                            loadedTrips.append(trip)
-                        }
+    private func loadTrips() -> [Trip] {
+        if let url = Bundle.main.url(forResource: "trips", withExtension: "txt") {
+            do {
+                let csv = try CSVReader(stream: InputStream(url: url)!)
+                 _ = csv.next() // Skip header
+                var loadedTrips: [Trip] = []
+                while let row = csv.next() {
+                    if row.count == 10 {
+                        let trip = Trip(route_id: row[0], service_id: row[1], trip_id: row[2], trip_headsign: row[3], direction_id: row[4], block_id: row[5], shape_id: row[6], trip_short_name: row[7], wheelchair_accessible: row[8], bikes_allowed: row[9])
+                        loadedTrips.append(trip)
                     }
-                    self.trips = loadedTrips
-                } catch {
-                    print("Error loading trips.txt: \(error)")
                 }
+                return loadedTrips
+            } catch {
+                print("Error loading trips.txt: \(error)")
             }
-        }.value
+        }
+        return []
     }
     
-    private func loadStopTimes() async {
-        await Task.detached { @MainActor in
-            if let url = Bundle.main.url(forResource: "stop_times", withExtension: "txt") {
-                do {
-                    let csv = try CSVReader(stream: InputStream(url: url)!)
-                    _ = csv.next() // Skip header
-                    var loadedStopTimes: [StopTime] = []
-                    while let row = csv.next() {
-                        if row.count == 10 {
-                            let stopTime = StopTime(trip_id: row[0], arrival_time: row[1], departure_time: row[2], stop_id: row[3], stop_sequence: row[4], stop_headsign: row[5], pickup_type: row[6], drop_off_type: row[7], shape_dist_traveled: row[8], timepoint: row[9])
-                            loadedStopTimes.append(stopTime)
-                        }
+    private func loadStopTimes() -> [StopTime] {
+        if let url = Bundle.main.url(forResource: "stop_times", withExtension: "txt") {
+            do {
+                let csv = try CSVReader(stream: InputStream(url: url)!)
+                _ = csv.next() // Skip header
+                var loadedStopTimes: [StopTime] = []
+                while let row = csv.next() {
+                    if row.count == 10 {
+                        let stopTime = StopTime(trip_id: row[0], arrival_time: row[1], departure_time: row[2], stop_id: row[3], stop_sequence: row[4], stop_headsign: row[5], pickup_type: row[6], drop_off_type: row[7], shape_dist_traveled: row[8], timepoint: row[9])
+                        loadedStopTimes.append(stopTime)
                     }
-                    self.stopTimes = loadedStopTimes
-                } catch {
-                    print("Error loading stop_times.txt: \(error)")
                 }
+                return loadedStopTimes
+            } catch {
+                print("Error loading stop_times.txt: \(error)")
             }
-        }.value
+        }
+        return []
     }
     
-    private func loadStopIdsFromStopTimes() async -> Set<String> {
+    private func loadStopIdsFromStopTimes() -> Set<String> {
         var stopIds = Set<String>()
         if let url = Bundle.main.url(forResource: "stop_times", withExtension: "txt") {
             do {
@@ -575,112 +593,6 @@ class BartManager: ObservableObject {
         return subsequentStopNames
     }
 
-    public func printAllBartRoutes() {
-        print("--- BART Routes ---")
-        for route in routes {
-            print("Route ID: \(route.route_id)")
-            print("  Short Name: \(route.route_short_name)")
-            print("  Long Name: \(route.route_long_name)")
-            print("  Description: \(route.route_desc)")
-
-            let tripsForRoute = trips.filter { $0.route_id == route.route_id }
-            let uniqueDirections = Set(tripsForRoute.map { $0.direction_id }).sorted()
-
-            if !uniqueDirections.isEmpty {
-                print("  Directions: \(uniqueDirections.joined(separator: ", "))")
-                
-                for directionId in uniqueDirections.sorted() {
-                    print("    Direction \(directionId):")
-                    if let representativeTrip = tripsForRoute.first(where: { $0.direction_id == directionId }), let stopTimesForTrip = stopTimesByTripId[representativeTrip.trip_id] {
-                        var stopNamesForDirection: [String] = []
-                        for stopTime in stopTimesForTrip {
-                            if let stop = stops.first(where: { $0.stop_id == stopTime.stop_id }) {
-                                stopNamesForDirection.append(stop.stop_name)
-                            }
-                        }
-                        print("      Stops: \(stopNamesForDirection.joined(separator: " -> "))")
-                    } else {
-                        print("      No trips found for this direction.")
-                    }
-                }
-            } else {
-                print("  Directions: N/A")
-            }
-            print("--------------------")
-        }
-    }
-
-    public func findConnectingRoutes(from originStationName: String, to destinationStationName: String, direction: String) -> [ConnectingRouteInfo] {
-        print("--- Finding Connecting Routes (Optimized) from \(originStationName) to \(destinationStationName) (Direction: \(direction)) ---")
-
-        guard let originStopIds = stopNameToIds[originStationName.lowercased()] else {
-            print("Error: Could not find stop IDs for origin station: \(originStationName)")
-            return []
-        }
-        print("Found \(originStopIds.count) stop IDs for origin station \(originStationName): \(originStopIds)")
-
-        guard let destinationStopIds = stopNameToIds[destinationStationName.lowercased()] else {
-            print("Error: Could not find stop IDs for destination station: \(destinationStationName)")
-            return []
-        }
-        print("Found \(destinationStopIds.count) stop IDs for destination station \(destinationStationName): \(destinationStopIds)")
-
-        let tripsThroughOrigin = stopTimes.filter { originStopIds.contains($0.stop_id) }
-        print("Found \(tripsThroughOrigin.count) stop times through origin station.")
-        
-        let tripsThroughDestination = stopTimes.filter { destinationStopIds.contains($0.stop_id) }
-        print("Found \(tripsThroughDestination.count) stop times through destination station.")
-
-        let originTripIds = Set(tripsThroughOrigin.map { $0.trip_id })
-        let destinationTripIds = Set(tripsThroughDestination.map { $0.trip_id })
-
-        let commonTripIds = originTripIds.intersection(destinationTripIds)
-        print("Found \(commonTripIds.count) common trips.")
-
-        var connectingRoutes: [ConnectingRouteInfo] = []
-        var processedRouteIds: Set<String> = []
-
-        for tripId in commonTripIds {
-            guard let trip = tripsById[tripId], trip.direction_id == direction else {
-                continue
-            }
-
-            guard let stopTimesForTrip = stopTimesByTripId[tripId] else {
-                continue
-            }
-
-            guard let originStopTime = stopTimesForTrip.first(where: { originStopIds.contains($0.stop_id) }),
-                  let destinationStopTime = stopTimesForTrip.first(where: { destinationStopIds.contains($0.stop_id) }) else {
-                continue
-            }
-            
-            guard let originSequence = Int(originStopTime.stop_sequence),
-                  let destinationSequence = Int(destinationStopTime.stop_sequence),
-                  destinationSequence > originSequence else {
-                continue
-            }
-
-            if !processedRouteIds.contains(trip.route_id) {
-                if let route = routeById[trip.route_id] {
-                    print("Found connecting route: \(route.route_long_name) via trip \(tripId)")
-                    connectingRoutes.append(ConnectingRouteInfo(route: route, directionId: direction))
-                    processedRouteIds.insert(trip.route_id)
-                }
-            }
-        }
-
-        if connectingRoutes.isEmpty {
-            print("No connecting routes found for the specified stations and direction.")
-        } else {
-            print("Found \(connectingRoutes.count) connecting routes:")
-            for routeInfo in connectingRoutes {
-                print("  - \(routeInfo.route.route_long_name) (Route ID: \(routeInfo.route.route_id))")
-            }
-        }
-        print("------------------------------------------------------------------")
-        return connectingRoutes
-    }
-
     public func printStationRouteInfo() {
         print("--- Station Route Information ---")
         var processedStationNames: Set<String> = []
@@ -714,7 +626,7 @@ class BartManager: ObservableObject {
         print("---------------------------------")
     }
 
-    private func buildTerminusStationsMap() {
+    private func buildTerminusStationsMap(stops: [Stop], trips: [Trip], stopTimesByTripId: [String: [StopTime]]) -> Set<String> {
         print("Building terminus stations map...")
         var terminusStopIds: Set<String> = []
         for trip in trips {
@@ -723,8 +635,9 @@ class BartManager: ObservableObject {
             }
         }
 
-        self.terminusStations = Set(stops.filter { terminusStopIds.contains($0.stop_id) }.map { $0.stop_name.lowercased() })
+        let terminusStations = Set(stops.filter { terminusStopIds.contains($0.stop_id) }.map { $0.stop_name.lowercased() })
         print("Terminus stations map built. Contains \(terminusStations.count) entries.")
+        return terminusStations
     }
 
     public func isTerminus(stationName: String) -> Bool {

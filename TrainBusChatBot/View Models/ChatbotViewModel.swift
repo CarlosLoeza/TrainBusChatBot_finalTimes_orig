@@ -29,8 +29,10 @@ class ChatbotViewModel: ObservableObject {
         self.trainListViewModel = TrainListViewModel(bartManager: bartManager)
         self.sortedAliases = bartManager.bartAbbreviationMap.keys.sorted { $0.count > $1.count }
         
+        print("[Debug] ChatbotViewModel init")
+        
         // Add initial prompt message
-        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Daly City BART' or 'Next Daly City Bart to Powell' or 'Next Daly City BART to Powell Street' if you know your start and destination stop.", isUser: false))
+        messages.append(Message(content: "I can help you find nearby BART stops or next train departures. Try asking 'Next Daly City BART' or 'Next Daly City Bart to Powell' if you know your start and destination stop.", isUser: false))
         loadFavoriteRoutes()
     }
 
@@ -296,7 +298,7 @@ class ChatbotViewModel: ObservableObject {
                 for etd in etdsForDestination {
                     for estimate in etd.estimate {
                         responseText += "  - \(estimate.minutes) min (Platform \(estimate.platform ?? "?"))\n"
-                    }
+                    }                   
                 }
             }
         }

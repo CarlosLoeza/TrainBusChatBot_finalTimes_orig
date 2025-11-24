@@ -10,7 +10,7 @@ import CoreLocation
 
 struct NearbyStopsView: View {
     @StateObject var bartViewModel: BartViewModel
-    @StateObject private var locationManager = LocationManager()
+    @ObservedObject var locationManager: LocationManager
     
     var body: some View {
         VStack {
@@ -97,6 +97,6 @@ struct NearbyStopsView_Previews: PreviewProvider {
         NearbyStopsView(bartViewModel: BartViewModel(mockStops: [
             BartManager.Stop(stop_id: "1", stop_code: "1", stop_name: "Mock Stop 1", stop_lat: "37.7", stop_lon: "-122.4", zone_id: "1", stop_desc: "", stop_url: "", location_type: "0", parent_station: "", stop_timezone: "", wheelchair_boarding: "0", platform_code: ""),
             BartManager.Stop(stop_id: "2", stop_code: "2", stop_name: "Mock Stop 2", stop_lat: "37.8", stop_lon: "-122.5", zone_id: "1", stop_desc: "", stop_url: "", location_type: "0", parent_station: "", stop_timezone: "", wheelchair_boarding: "0", platform_code: "")
-        ], mockDistance: 100.0))
+        ], mockDistance: 100.0), locationManager: LocationManager())
     }
 }
