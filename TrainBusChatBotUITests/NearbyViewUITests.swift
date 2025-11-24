@@ -36,7 +36,7 @@ final class NearbyViewUITests: BaseXCUITestCase {
 
     /// Tests the nearby station functionality for multiple stations by relaunching the app for each location.
     func testNearbyStations_DirectInjection() throws {
-        /*
+        
         for station in stationsToTest {
             // --- 1. ARRANGE: Set the app's launch environment to simulate the location. ---
             app = XCUIApplication()
@@ -64,7 +64,7 @@ final class NearbyViewUITests: BaseXCUITestCase {
             // Terminate the app to ensure a clean state for the next iteration.
             app.terminate()
         }
-         */
+         
     }
 
     // MARK: - Helper Method
