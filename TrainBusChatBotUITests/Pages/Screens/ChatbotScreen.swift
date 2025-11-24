@@ -83,7 +83,7 @@ struct ChatbotScreen {
     ///   - text: The text content expected in the bot's response.
     ///   - timeout: The maximum time to wait for the response.
     /// - Returns: True if the bot response is found, false otherwise.
-    func waitForBotResponse(containing text: String, timeout: TimeInterval = 10) -> Bool {
+    func waitForBotResponse(containing text: String, timeout: TimeInterval = 5) -> Bool {
         return app.staticTexts.containing(NSPredicate(format: "label CONTAINS %@", text)).firstMatch.waitForExistence(timeout: timeout)
     }
 

@@ -15,9 +15,9 @@ struct StationTestData {
     let location: CLLocation
 }
 
-final class NearbyViewUITests: XCTestCase {
+// Refactored to use BaseXCUITestCase for consistent setup and teardown.
+final class NearbyViewUITests: BaseXCUITestCase {
 
-    var app: XCUIApplication!
     /// Define our list of stations to test with their names and simulated coordinates.
     let stationsToTest: [StationTestData] = [
         StationTestData(name: "Powell Street", location: CLLocation(latitude: 37.7840, longitude: -122.4078)),
@@ -27,43 +27,44 @@ final class NearbyViewUITests: XCTestCase {
     ]
     
     override func setUpWithError() throws {
-        try super.setUpWithError()
-        // Stop tests immediately if a failure occurs.
+        // We override the base setup to prevent the app from launching immediately.
+        // We will configure and launch it inside the test loop for each station.
         continueAfterFailure = false
-        // Initialize the XCUIApplication instance for the app under test.
-        app = XCUIApplication()
-        // Add launch arguments to configure the app for UI testing (e.g., mocking data).
-        app.launchArguments.append("--UITesting")
-        // Launch the application.
-        app.launch() // Launch the app at the beginning of each test
     }
 
-    override func tearDownWithError() throws {
-        // Clean up the app instance after each test.
-        app = nil
-        try super.tearDownWithError()
-    }
+    // MARK: - Test Functions
 
-    // MARK: - Test Functions for Each Station
+    /// Tests the nearby station functionality for multiple stations by relaunching the app for each location.
+    func testNearbyStations_DirectInjection() throws {
+        
+        for station in stationsToTest {
+            // --- 1. ARRANGE: Set the app's launch environment to simulate the location. ---
+            app = XCUIApplication()
+            app.forceLocation(latitude: station.location.coordinate.latitude, longitude: station.location.coordinate.longitude)
+            
+            // Handle location permission alert that might appear on first launch.
+            addUIInterruptionMonitor(withDescription: "Location Permission") { alert in
+                if alert.buttons["Allow While Using App"].exists {
+                    alert.buttons["Allow While Using App"].tap()
+                    return true
+                }
+                return false
+            }
+            
+            // Launch the app. The LocationManager will now pick up the simulated location.
+            app.launch()
+            
+            // The app needs to be in the foreground to handle the interruption.
+            // A tap is a common way to ensure this.
+            app.tap()
 
-    /// Tests the nearby station functionality for Powell Street.
-    func testNearby_PowellStreet() throws {
-        try performNearbyStationTest(station: stationsToTest[0])
-    }
-
-    /// Tests the nearby station functionality for Colma.
-    func testNearby_Colma() throws {
-        try performNearbyStationTest(station: stationsToTest[1])
-    }
-
-    /// Tests the nearby station functionality for Daly City.
-    func testNearby_DalyCity() throws {
-        try performNearbyStationTest(station: stationsToTest[2])
-    }
-
-    /// Tests the nearby station functionality for Montgomery Street.
-    func testNearby_MontgomeryStreet() throws {
-        try performNearbyStationTest(station: stationsToTest[3])
+            // Perform the test steps for the given station.
+            try performNearbyStationTest(station: station)
+            
+            // Terminate the app to ensure a clean state for the next iteration.
+            app.terminate()
+        }
+         
     }
 
     // MARK: - Helper Method
@@ -71,9 +72,8 @@ final class NearbyViewUITests: XCTestCase {
     /// Performs the full test flow for a given station in the Nearby Stops view.
     /// - Parameter station: The StationTestData containing the station's name and location.
     private func performNearbyStationTest(station: StationTestData) throws {
-        // --- 1. ARRANGE: Set the device's simulated location. ---
-        // XCTest will automatically terminate and relaunch the app after setting the location.
-        XCUIDevice.shared.location = XCUILocation(location: station.location)
+        // Add a small delay to allow the UI to settle after launch.
+        sleep(2)
 
         // --- 2. ACT: Navigate to the Nearby tab and trigger location request ---
         let mainTabBar = MainTabBar(app: app)
@@ -82,16 +82,18 @@ final class NearbyViewUITests: XCTestCase {
         nearbyStopScreen.nearbyBartButton.tap() // Taps the "Find Nearby BART Stops" button
         
         // Debug: Print accessibility hierarchy before checking for the list
-        print("\n--- Accessibility Hierarchy Before List Check ---")
+        print("\n--- Accessibility Hierarchy Before List Check for \(station.name) ---")
         print(app.debugDescription)
         print("---------------------------------------------------")
+        
+        // --- 3. ASSERT: Verify the station appears in the list ---
         nearbyStopScreen
-            .isNearbyStopsListVisible(timeout: 10) // Wait for the list to populate after tapping the find button
+            .isNearbyStopsListVisible(timeout: 30)
             .verifyNearbyStopExists(stationName: station.name, shouldExist: true)
             .tapStationRow(stationName: station.name)
 
-        // --- 5. ASSERT: Verify navigation to the details screen ---
-        // The destination screen should have a navigation bar with the title of the station.
+        // --- 4. ASSERT: Verify navigation to the details screen ---
         XCTAssertTrue(app.navigationBars["\(station.name)"].waitForExistence(timeout: 5), "Should navigate to the Train List view for \(station.name).")
     }
 }
+

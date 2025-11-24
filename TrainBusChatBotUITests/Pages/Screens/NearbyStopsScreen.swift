@@ -33,7 +33,7 @@ struct NearbyStopsScreen {
     @discardableResult
     func tapStationRow(stationName: String) -> NearbyStopsScreen {
         let foundNearbyStopsButton = nearbyStationList.buttons["nearbyStopRow_\(stationName)"]
-        XCTAssertTrue(foundNearbyStopsButton.waitForExistence(timeout: 4), "nearbyStopRow_\(stationName), was NOT found")
+        XCTAssertTrue(foundNearbyStopsButton.waitForExistence(timeout: 15), "nearbyStopRow_\(stationName), was NOT found")
         foundNearbyStopsButton.tap()
         return self
     }

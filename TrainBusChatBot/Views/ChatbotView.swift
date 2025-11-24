@@ -1,125 +1,120 @@
-
 import SwiftUI
 import CoreLocation
-//
+import Combine
+
 struct ChatbotView: View {
     @StateObject var chatbotVM: ChatbotViewModel
-    @State private var keyboardHeight: CGFloat = 0 // New state for keyboard height
+    @ObservedObject var locationManager: LocationManager
+
     @FocusState private var isTextFieldFocused: Bool
-    
-    // We need a way to get the user's location for the chatbot
-    @StateObject private var locationManager = LocationManager()
+
+    init(chatbotVM: ChatbotViewModel, locationManager: LocationManager) {
+        _chatbotVM = StateObject(wrappedValue: chatbotVM)
+        _locationManager = ObservedObject(wrappedValue: locationManager)
+    }
 
     var body: some View {
-        VStack {
-            ScrollViewReader { scrollViewProxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 8) {
-                        ForEach(chatbotVM.messages) { message in
-                            messageRow(message: message)
-                                .id(message.id)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-                .onChange(of: chatbotVM.messages.count) { newCount in
-                    guard newCount > 0 else { return }
-                    let lastMessage = chatbotVM.messages.last!
+        VStack(spacing: 0) {
+            
+            // MARK: - Messages List (Isolated)
+            ChatMessagesList(messages: chatbotVM.messages)
+            
+            Divider()
 
-                    if lastMessage.isUser {
-                        // User's own message was just sent, scroll to the bottom to show it.
-                        scrollTo(id: lastMessage.id, anchor: .bottom, proxy: scrollViewProxy)
-                    } else {
-                        // Bot has just responded. Scroll to the user's query (the message before the last one)
-                        // and anchor it to the top of the view.
-                        if chatbotVM.messages.count >= 2 {
-                            let userQueryMessageId = chatbotVM.messages[chatbotVM.messages.count - 2].id
-                            scrollTo(id: userQueryMessageId, anchor: .top, proxy: scrollViewProxy)
-                        } else {
-                            // Fallback for the unlikely case where the bot message is the first one.
-                            scrollTo(id: lastMessage.id, anchor: .bottom, proxy: scrollViewProxy)
-                        }
-                    }
-                }
-            }
-            .onTapGesture {
-                isTextFieldFocused = false // dismiss keyboard when tapping anywhere outside
-            }
-            HStack {
-                TextField("Ask about BART...", text: $chatbotVM.query)
-                    .padding()
-                    .background(Color(UIColor.systemGray6))
-                    .cornerRadius(13.0)
-                    .focused($isTextFieldFocused)
-                    .ignoresSafeArea(.all)
-                    .accessibilityIdentifier("messageInput")
-                Button{
-                    if !chatbotVM.query.isEmpty{
-                        Task {
-                            await chatbotVM.processQuery(chatbotVM.query, userLocation: chatbotVM.userLocation)
-                            chatbotVM.query = ""
-                        }
-                    }
-                } label: {
-                    Text("Send")
-                        .padding()
-                        .background(.gray)
-                        .cornerRadius(13.0)
-                       
-                }
-                .accessibilityIdentifier("sendButton")
-                if chatbotVM.isLoadingResponse {
-                    ProgressView()
-                        .padding(.trailing)
-                } else {
-                    
-                }
-            }
-            .padding(5) // Keep the padding(5) as it was in the current file
+            // MARK: - Input Bar (Isolated)
+            ChatInputBar(
+                text: $chatbotVM.query,
+                isFocused: _isTextFieldFocused,
+                onSend: sendMessage
+            )
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color(.systemBackground))
         }
         .navigationTitle("BART Chatbot")
-        .onAppear {
-            locationManager.requestLocation()
+        .onTapGesture {
+            isTextFieldFocused = false
         }
-        .onReceive(locationManager.$location) { location in
+        .onReceive(
+            locationManager.$location
+                .removeDuplicates()
+                .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+        ) { location in
             chatbotVM.userLocation = location
+        }
+    }
+
+    // MARK: - Send
+    private func sendMessage() {
+        guard !chatbotVM.query.isEmpty else { return }
+        let text = chatbotVM.query
+
+        Task {
+            await chatbotVM.processQuery(text, userLocation: chatbotVM.userLocation)
+            chatbotVM.query = ""
+        }
+    }
+}
+
+struct ChatMessagesList: View {
+    let messages: [Message]
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(messages) { message in
+                        messageRow(message: message)
+                            .id(message.id)
+                    }
+                }
+                .padding(.horizontal)
+            }
+            .onChange(of: messages.count) { _ in
+                scrollToBottom(proxy: proxy)
+            }
+        }
+    }
+
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        guard let last = messages.last else { return }
+
+        // ⚡ Avoid animation during keyboard appearance
+        DispatchQueue.main.async {
+            proxy.scrollTo(last.id, anchor: .bottom)
         }
     }
 
     @ViewBuilder
     private func messageRow(message: Message) -> some View {
-        HStack {
-            if message.isUser {
-                Spacer()
-                HStack {
-                    Text(message.content)
-                    Button(action: {
-                        chatbotVM.toggleFavorite(query: message.content)
-                    }) {
-                        Image(systemName: chatbotVM.isFavorite(query: message.content) ? "star.fill" : "star")
-                            .foregroundColor(.yellow)
-                    }
-                    .accessibilityIdentifier("favoriteButton_\(message.content)")
-                }
-                .padding(10)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-            } else {
-                Text(message.content)
-                    .padding(10)
-                    .background(Color.gray.opacity(0.2))
-                    .foregroundColor(.primary)
-                    .cornerRadius(10)
-                Spacer()
-            }
-        }
+        Text(message.content)
+            .padding(10)
+            .background(message.isUser ? Color.blue : Color.gray.opacity(0.3))
+            .foregroundColor(message.isUser ? .white : .primary)
+            .cornerRadius(10)
+            .frame(maxWidth: .infinity, alignment: message.isUser ? .trailing : .leading)
     }
-    
-    private func scrollTo(id: UUID, anchor: UnitPoint, proxy: ScrollViewProxy) {
-        DispatchQueue.main.async {
-            withAnimation {
-                proxy.scrollTo(id, anchor: anchor)
+}
+
+struct ChatInputBar: View {
+    @Binding var text: String
+    @FocusState var isFocused: Bool
+    let onSend: () -> Void
+
+    var body: some View {
+        HStack {
+            TextField("Ask about BART...", text: $text)
+                .padding(10)
+                .background(Color(.systemGray6))
+                .cornerRadius(13)
+                .focused($isFocused)
+
+            Button(action: onSend) {
+                Text("Send")
+                    .padding(10)
+                    .background(Color.gray.opacity(0.8))
+                    .foregroundColor(.white)
+                    .cornerRadius(13)
             }
         }
     }
@@ -127,8 +122,7 @@ struct ChatbotView: View {
 
 struct ChatbotView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a mock BartManager for the preview
         let mockBartManager = BartManager(isPreview: true)
-        ChatbotView(chatbotVM: ChatbotViewModel(bartManager: mockBartManager))
+        ChatbotView(chatbotVM: ChatbotViewModel(bartManager: mockBartManager), locationManager: LocationManager())
     }
 }

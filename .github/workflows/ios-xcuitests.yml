@@ -1,0 +1,51 @@
+name: iOS XCUITests
+
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  xcuitests:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Debug - Print current directory
+        run: pwd
+
+      - name: Debug - List files recursively
+        run: ls -R
+
+      - name: Copy Secrets_Debug.xcconfig to Secrets.xcconfig
+        run: cp TrainBusChatBot/Secrets_Debug.xcconfig ./Secrets.xcconfig
+
+      - name: Set up Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Create and Boot Simulator
+        run: |
+          DEVICE_NAME="Test-iPhone-15-Pro"
+          # Create the simulator and capture its UDID (unique identifier)
+          DEVICE_UDID=$(xcrun simctl create "$DEVICE_NAME" com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro)
+          # Store the UDID in the GitHub environment for subsequent steps
+          echo "DEVICE_UDID=$DEVICE_UDID" >> $GITHUB_ENV
+          # Boot the new simulator
+          xcrun simctl boot "$DEVICE_UDID"
+          # Wait for it to finish booting before proceeding
+          xcrun simctl bootstatus "$DEVICE_UDID" -b
+
+      - name: Grant Location Permission
+        run: xcrun simctl privacy ${{ env.DEVICE_UDID }} grant location c-lo.TrainBusChatBot
+
+      - name: Run Tests
+        run: |
+          xcodebuild \
+            -scheme "TrainBusChatBot" \
+            -destination "id=${{ env.DEVICE_UDID }}" \
+            -testPlan "TestPlan" \
+            test
+

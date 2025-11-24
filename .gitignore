@@ -1,0 +1,46 @@
+# Xcode
+#
+# gitignore contributors: remember to keep this file platform-agnostic
+# gitignore contributors: remember to update the documentation
+# https://help.github.com/articles/ignoring-files/
+
+## User-specific
+*.xcuserdatad
+*.xcworkspace/contents.xcworkspacedata
+*.xctestplan
+
+## Build generated
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM/
+
+## Swift Package Manager
+.build/
+Packages/
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
+## Secrets
+Secrets.xcconfig
+TrainBusChatBot/Secrets.xcconfig
+
+## Cocoapods
+Pods/
+Gemfile.lock
+Podfile.lock
+
+## Carthage
+Carthage/
+
+## Fastlane
+fastlane/report.xml
+fastlane/test_output
+fastlane/screenshots
+fastlane/logs
+
+## Misc
+.DS_Store
+*.swp
+*~
+*.orig

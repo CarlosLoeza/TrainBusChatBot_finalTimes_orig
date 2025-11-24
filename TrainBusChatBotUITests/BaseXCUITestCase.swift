@@ -26,8 +26,18 @@ class BaseXCUITestCase: XCTestCase {
         // The argument you were already using
         app.launchArguments.append("--UITesting")
 
+        // Set a default simulated location for tests
+        app.forceLocation(latitude: 37.7840, longitude: -122.4078) // Powell Street coordinates
+
         // You could add more here later, for example:
         // app.launchEnvironment["MOCK_NETWORK_ERRORS"] = "true"
         // app.launchArguments.append("--reset-user-defaults")
+    }
+}
+
+extension XCUIApplication {
+    func forceLocation(latitude: Double, longitude: Double) {
+        let coord = "\(latitude),\(longitude)"
+        self.launchEnvironment["SIMULATED_LOCATION"] = coord
     }
 }

@@ -7,7 +7,10 @@ final class ChatbotViewUITests: BaseXCUITestCase {
         // 1. First, run the setup from the parent class (BaseXCUITestCase).
         try super.setUpWithError()
 
-        // 2. Now, add the specific navigation step for this group of tests.
+        // 2. Wait for the main UI to be ready before interacting with it.
+        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 30), "The main tab bar should appear on screen.")
+
+        // 3. Now, add the specific navigation step for this group of tests.
         let mainTabBar = MainTabBar(app: app)
         mainTabBar.tapChatbotTab()
     }

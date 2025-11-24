@@ -4,7 +4,10 @@
       "id" : "3B981860-0061-43E8-9814-A16E6B89823B",
       "name" : "Configuration 1",
       "options" : {
-
+        "location" : {
+          "path" : "TrainBusChatBot/PowellSt.gpx",
+          "type" : "gpxFile"
+        }
       }
     }
   ],

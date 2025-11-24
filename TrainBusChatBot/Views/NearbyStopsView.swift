@@ -10,59 +10,81 @@ import CoreLocation
 
 struct NearbyStopsView: View {
     @StateObject var bartViewModel: BartViewModel
-    @StateObject private var locationManager = LocationManager()
+    @ObservedObject var locationManager: LocationManager
     
     var body: some View {
-        NavigationView {
-            VStack {
-                Button("Find Nearby BART Stops") {
-                    locationManager.requestLocation()
-                }
-                .accessibilityIdentifier("nearbyStopButton")
-                
-                if bartViewModel.isLoadingStops {
-                    ProgressView("Finding nearby stops...")
-                } else if let location = locationManager.location {
-                    if let distance = bartViewModel.nearestStopDistance {
-                        Text("Distance to nearest stop: \(String(format: "%.2f", distance)) meters")
-                    }
-                    
-                    if bartViewModel.nearbyStops.isEmpty {
-                        Text("No nearby BART stops found.")
-                    } else {
-                        List(bartViewModel.nearbyStops) { stop in
-                            // Create a Station object from BartManager.Stop
-                            let station = Station(abbr: stop.bartAbbr ?? "", name: stop.stop_name)
-                            NavigationLink(destination: TrainListView(station: station)) {
-                                VStack(alignment: .leading) {
-                                    Text(stop.stop_name)
-                                        .font(.headline)
-                                    Text("ID: \(stop.stop_id)")
-                                        .font(.subheadline)
-                                }
-                            }
-                            .accessibilityIdentifier("nearbyStopRow_\(stop.stop_name)")
-                        }
-                        .accessibilityIdentifier("nearbyStationList")
-                    }
+        VStack {
+            findStopsButton
+            
+            if let location = locationManager.location {
+                if bartViewModel.nearbyStops.isEmpty && !bartViewModel.isLoadingStops {
+                    Text("No nearby BART stops found.")
                 } else {
-                    Text("Tap 'Find Nearby BART Stops' to get your location.")
+                    stopList(for: location)
                 }
-                
-                Spacer()
+            } else {
+                Text("Tap 'Find Nearby BART Stops' to get your location.")
             }
-            .navigationTitle("Nearby BART")
-            .onReceive(locationManager.$location) { location in
-                print("onReceive triggered. Location: \(location?.coordinate.latitude ?? 0), \(location?.coordinate.longitude ?? 0)")
-                guard let location = location else {
-                    bartViewModel.isLoadingStops = false // Stop loading if location is nil
-                    return
+            
+            Spacer()
+        }
+        .navigationTitle("Nearby BART")
+        .task(id: locationManager.location) {
+            await handleLocationUpdate(locationManager.location)
+        }
+    }
+
+    @ViewBuilder
+    private var findStopsButton: some View {
+        Button(action: {
+            locationManager.requestLocation()
+        }) {
+            if bartViewModel.isLoadingStops {
+                HStack {
+                    ProgressView()
+                    Text("Finding Stops...")
                 }
-                Task {
-                    await bartViewModel.findNearbyStops(from: location, radius: 1000)
-                }
+            } else {
+                Text("Find Nearby BART Stops")
             }
         }
+        .disabled(bartViewModel.isLoadingStops)
+        .accessibilityIdentifier("nearbyStopButton")
+    }
+
+    @ViewBuilder
+    private func stopList(for location: CLLocation) -> some View {
+        VStack {
+            if let distance = bartViewModel.nearestStopDistance {
+                Text("Distance to nearest stop: \(String(format: "%.2f", distance / 1609.34)) miles")
+                    
+            }
+            
+            List(bartViewModel.nearbyStops) { stop in
+                let station = Station(abbr: stop.bartAbbr ?? "", name: stop.stop_name)
+                NavigationLink(destination: TrainListView(station: station, bartManager: bartViewModel.bartManager)) {
+                    VStack(alignment: .leading) {
+                        Text(stop.stop_name)
+                            .font(.headline)
+                        Text("ID: \(stop.stop_id)")
+                            .font(.subheadline)
+                    }
+                }
+                .accessibilityIdentifier("nearbyStopRow_\(stop.stop_name)")
+            }
+            .accessibilityIdentifier("nearbyStationList")
+        }
+    }
+    
+    private func handleLocationUpdate(_ location: CLLocation?) async {
+        print("[CI DEBUG] NearbyStopsView.onReceive: Location received: \(location?.description ?? "nil").")
+        guard let location = location else {
+            print("[CI DEBUG] NearbyStopsView.onReceive: Location is nil, stopping.")
+            bartViewModel.isLoadingStops = false
+            return
+        }
+        print("[CI DEBUG] NearbyStopsView.onReceive: Location is valid, starting findNearbyStops task.")
+        await bartViewModel.findNearbyStops(from: location, radius: 1000)
     }
 }
 
@@ -75,6 +97,6 @@ struct NearbyStopsView_Previews: PreviewProvider {
         NearbyStopsView(bartViewModel: BartViewModel(mockStops: [
             BartManager.Stop(stop_id: "1", stop_code: "1", stop_name: "Mock Stop 1", stop_lat: "37.7", stop_lon: "-122.4", zone_id: "1", stop_desc: "", stop_url: "", location_type: "0", parent_station: "", stop_timezone: "", wheelchair_boarding: "0", platform_code: ""),
             BartManager.Stop(stop_id: "2", stop_code: "2", stop_name: "Mock Stop 2", stop_lat: "37.8", stop_lon: "-122.5", zone_id: "1", stop_desc: "", stop_url: "", location_type: "0", parent_station: "", stop_timezone: "", wheelchair_boarding: "0", platform_code: "")
-        ], mockDistance: 100.0))
+        ], mockDistance: 100.0), locationManager: LocationManager())
     }
 }
