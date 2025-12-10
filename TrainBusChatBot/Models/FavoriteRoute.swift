@@ -13,4 +13,5 @@ struct FavoriteRoute: Identifiable, Codable, Equatable {
     let type: FavoriteType
     let name: String
     let direction: String?
+    
 }
