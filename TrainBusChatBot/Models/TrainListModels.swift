@@ -67,3 +67,28 @@ struct Station: Decodable, Identifiable, Hashable {
     let name: String
     var isFavorite: Bool = false
 }
+
+struct TrainResult: Identifiable {
+    let id = UUID()
+    let queryTitle: String      // e.g. "Next Daly City BART to Powell"
+    let groups: [TrainGroup]
+}
+
+struct TrainGroup: Identifiable {
+    let id = UUID()
+    let destination: String     // e.g. "Powell"
+    let items: [TrainItem]
+}
+
+struct TrainItem: Identifiable {
+    let id = UUID()
+    let minutes: String         // e.g. "4", "Leaving"
+    let platform: String
+}
+
+struct NearbyStop: Identifiable {
+    let id = UUID()
+    let name: String
+    let distanceMiles: Double
+    let walkingMinutes: Int
+}

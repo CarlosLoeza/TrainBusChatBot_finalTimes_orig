@@ -56,6 +56,7 @@ final class NearbyViewUITests: XCTestCase {
         try performNearbyStationTest(station: stationsToTest[1])
     }
 
+    
     /// Tests the nearby station functionality for Daly City.
     func testNearby_DalyCity() throws {
         try performNearbyStationTest(station: stationsToTest[2])
