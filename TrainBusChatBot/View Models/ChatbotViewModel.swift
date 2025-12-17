@@ -312,7 +312,7 @@ class ChatbotViewModel: ObservableObject {
             )
         }
 
-        return "Found \(self.nearbyStops.count) nearby BART stops."
+        return "\(self.nearbyStops.first?.name ?? "") BART is the nearest station to you."
     }
 
 
