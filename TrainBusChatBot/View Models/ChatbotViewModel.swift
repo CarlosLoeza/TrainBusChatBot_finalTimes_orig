@@ -168,6 +168,7 @@ class ChatbotViewModel: ObservableObject {
             }
         } catch {
             botResponseContent = "Sorry, I had trouble understanding that. Please try rephrasing your question. (Error: \(error.localizedDescription))"
+            print(botResponseContent)
         }
 
         messages.append(Message(content: botResponseContent, isUser: false))
